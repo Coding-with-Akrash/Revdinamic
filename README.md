@@ -45,46 +45,6 @@ rev-dynamics/
 │       └── style.css       # Main stylesheet
 ├── package.json
 └── README.md
-```
-autodyno-ai/
-├── backend/
-│   ├── app.py              # Flask application factory
-│   ├── run.py              # Application runner with dependencies
-│   ├── models/
-│   │   ├── __init__.py
-│   │   ├── vehicle.py      # Vehicle database and specs
-│   │   └── part.py         # Performance parts catalog
-│   ├── routes/
-│   │   ├── __init__.py
-│   │   ├── auth_routes.py  # Authentication endpoints
-│   │   └── api_routes.py   # API endpoints (vehicles, parts, OBD, chat)
-│   └── services/
-│       ├── __init__.py
-│       ├── obd_service.py  # OBD data simulation
-│       └── recommendation_service.py  # AI recommendations
-│   ├── requirements.txt
-│   └── README.md
-├── frontend/
-│   ├── static/
-│   │   ├── index.html      # Main dashboard
-│   │   ├── dyno-tune.html  # Dyno tuning interface
-│   │   ├── vehicle-select.html  # Vehicle selection
-│   │   ├── parts-catalog.html   # Parts catalog with AI
-│   │   ├── registration.html    # User registration
-│   │   ├── owner-login.html     # Owner login
-│   │   ├── tuner-login.html     # Tuner login
-│   │   ├── verify-email.html    # Email verification
-│   │   ├── forgot-password.html # Password recovery
-│   │   └── recover-password.html # Password reset
-│   └── js/
-│       ├── api-client.js   # Backend API client
-│       ├── main.js         # Main application controller
-│       └── vehicle-manager.js  # Vehicle state management
-│   └── css/
-│       └── style.css       # Main stylesheet
-├── package.json
-└── README.md
-```
 
 ## Features
 
