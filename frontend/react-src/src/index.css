@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-primary-black text-light-cream font-inter;
+  background: linear-gradient(135deg, #000101 0%, #0C2E3D 50%, #000101 100%);
+  min-height: 100vh;
+}
+
+.glass-card {
+  background: rgba(12, 46, 61, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(154, 124, 101, 0.2);
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.glass-nav {
+  background: rgba(12, 46, 61, 0.8);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(154, 124, 101, 0.1);
+}
+
+.text-gradient {
+  background: linear-gradient(90deg, #186784, #9A7C65);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.border-gradient {
+  border: 1px solid transparent;
+  background: linear-gradient(90deg, #186784, #9A7C65) border-box;
+  background-clip: padding-box, border-box;
+}
+
+@keyframes shimmer {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+.animate-shimmer {
+  background-size: 200% auto;
+  animation: shimmer 3s linear infinite;
+}
+
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+
+.scrollbar-thumb-performance-blue::-webkit-scrollbar-thumb {
+  background: #186784;
+}
+
+.scrollbar-track-dark-blue::-webkit-scrollbar-track {
+  background: #0C2E3D;
+}

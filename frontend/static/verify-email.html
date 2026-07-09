@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verification | RevDynamics</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #000101, #0C2E3D);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            position: relative;
+            width: 400px;
+        }
+
+        .login-box {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            padding: 40px;
+            overflow: hidden;
+        }
+
+        .login-box::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 15px 50px #000);
+            border-radius: 24px;
+            animation: rotating 4s linear infinite;
+            animation-delay: -1s;
+            z-index: 0;
+            background: linear-gradient(45deg, var(--performance-blue), var(--metallic-bronze), var(--sand-beige));
+        }
+
+        .login-box::after {
+            content: '';
+            position: absolute;
+            inset: 4px;
+            background: rgba(12, 46, 61, 0.95);
+            border-radius: 20px;
+            z-index: 0;
+        }
+
+        @keyframes rotating {
+            0% {
+                transform: rotate(0deg) scale(1.1);
+                filter: hue-rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg) scale(1.1);
+                filter: hue-rotate(360deg);
+            }
+        }
+
+        .login-content {
+            position: relative;
+            z-index: 1;
+            color: var(--light-cream);
+            width: 100%;
+        }
+
+        .login-content .form-control {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(154, 124, 101, 0.3);
+            color: var(--light-cream);
+        }
+
+        .login-content .form-control::placeholder {
+            color: rgba(196, 166, 182, 0.5);
+        }
+
+        .login-content .input-group-text {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(154, 124, 101, 0.3);
+            color: var(--performance-blue);
+        }
+
+        .login-content .btn-primary {
+            background: linear-gradient(135deg, var(--performance-blue), var(--metallic-bronze));
+            border: none;
+        }
+
+        .login-content .btn-outline-primary {
+            border-color: var(--performance-blue);
+            color: var(--performance-blue);
+        }
+
+        .login-content a {
+            color: var(--sand-beige);
+        }
+
+        .login-content .text-muted {
+            color: rgba(196, 166, 182, 0.6) !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <div class="login-content">
+                <div class="text-center mb-4">
+                    <i class="fas fa-envelope-open fa-3x mb-3" style="color: var(--performance-blue);"></i>
+                    <h3 class="fw-bold">Verify Your Email</h3>
+                    <p class="text-muted">Enter the 6-digit code sent to your email</p>
+                </div>
+                
+                <form id="verify-form">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold" style="color: var(--sand-beige);">Email</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-envelope"></i>
+                            </span>
+                            <input type="email" class="form-control" id="email-input" readonly>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold" style="color: var(--sand-beige);">Verification Code</label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-key"></i>
+                            </span>
+                            <input type="text" class="form-control text-center" id="code-input" placeholder="000000" maxlength="6" pattern="[0-9]{6}" required>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100 rounded-pill py-2 fw-bold mb-3">
+                        <i class="fas fa-check me-2"></i>Verify Code
+                    </button>
+                </form>
+                
+                <div class="text-center">
+                    <button onclick="resendVerification()" class="btn btn-outline-primary btn-sm rounded-pill">
+                        <i class="fas fa-redo me-2"></i>Resend Code
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/js/api-client.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const email = urlParams.get('email');
+            document.getElementById('email-input').value = email || '';
+            
+            const form = document.getElementById('verify-form');
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const emailValue = document.getElementById('email-input').value;
+                const code = document.getElementById('code-input').value;
+                
+                if (!emailValue || !code) {
+                    alert('Please enter email and verification code');
+                    return;
+                }
+                
+                try {
+                    const result = await window.apiClient.verifyCode({ email: emailValue, code });
+                    if (result.success) {
+                        window.location.href = 'login-choice.html';
+                    } else {
+                        alert(result.error || 'Verification failed');
+                    }
+                } catch (err) {
+                    alert('Verification failed. Check backend connection.');
+                }
+            });
+        });
+        
+        async function resendVerification() {
+            const email = document.getElementById('email-input').value;
+            if (email) {
+                const result = await window.apiClient?.resendVerification(email) || 
+                    fetch('/api/resend-verification', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({email})
+                    }).then(r => r.json());
+                alert(result.message || result.error);
+            }
+        }
+    </script>
+</body>
+</html>

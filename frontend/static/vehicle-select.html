@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Vehicle | RevDynamics</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body style="background: linear-gradient(135deg, #000101 0%, #0C2E3D 50%, #000101 100%); min-height: 100vh;">
+
+    <nav class="navbar navbar-expand-lg py-3">
+        <div class="container">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="index.html">
+                <img src="IMG/Gemini_Generated_Image_29cg2x29cg2x29cg.png" style="width:44.59px;height:44.59px;">
+                <span class="text-gradient">RevDynamics</span>
+            </a>
+            <div class="ms-auto d-flex gap-2" id="nav-buttons">
+                <a href="profile.html" class="btn btn-outline-primary rounded-pill px-4 fw-semibold" style="display: none;">
+                    <i class="fas fa-user-cog me-2"></i>Profile
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="container text-center py-5 mt-5">
+        <h1 class="display-4 fw-bold mb-4" style="color: var(--light-cream);">Select Your Vehicle</h1>
+        <p class="lead mb-5 mx-auto" style="max-width: 600px; color: var(--sand-beige);">
+            Choose your car from our database or add a new vehicle to begin tuning.
+        </p>
+    </header>
+
+    <section class="container py-4">
+        <div class="row mb-4">
+            <div class="col-md-8 mx-auto">
+                <div class="input-group input-group-lg">
+                    <span class="input-group-text border" style="background: rgba(255,255,255,0.9); border: 1px solid rgba(154, 124, 101, 0.3);">
+                        <i class="fas fa-search" style="color: var(--performance-blue);"></i>
+                    </span>
+                    <input type="text" class="form-control border" placeholder="Search make, model, or year..." id="vehicle-search" style="background: rgba(255,255,255,0.9); color: var(--dark-blue); border: 1px solid rgba(154, 124, 101, 0.3);">
+                    <button class="btn btn-primary" id="vehicle-search-btn">Search</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex gap-2 flex-wrap">
+                    <button class="btn btn-outline-primary rounded-pill active">All Vehicles</button>
+                    <button class="btn btn-outline-primary rounded-pill">Muscle Cars</button>
+                    <button class="btn btn-outline-primary rounded-pill">Import Tuners</button>
+                    <button class="btn btn-outline-primary rounded-pill">Exotics</button>
+                    <button class="btn btn-outline-primary rounded-pill">European</button>
+                    <button class="btn btn-outline-primary rounded-pill">Japanese</button>
+                    <button class="btn btn-outline-primary rounded-pill">Domestic</button>
+                    <button class="btn btn-outline-primary rounded-pill">Pakistani</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4" id="vehicles-container">
+            <div class="text-center p-5" style="color: var(--sand-beige);">Loading vehicles...</div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="vehicle-compare.html" class="btn btn-primary rounded-pill px-4">
+                <i class="fas fa-balance-scale me-2"></i>Compare Vehicles
+            </a>
+        </div>
+    </section>
+
+    <section class="container py-4">
+        <div class="text-center p-5 rounded-4 border shadow-sm" style="background: rgba(12, 46, 61, 0.3);">
+            <i class="fas fa-plus-circle fa-3x mb-3" style="color: var(--performance-blue);"></i>
+            <h4 class="mb-3" style="color: var(--light-cream);">Vehicle Not Listed?</h4>
+            <p class="mb-4" style="color: var(--sand-beige);">Manage your account and vehicles from your profile</p>
+            <a href="profile.html" class="btn btn-outline-primary rounded-pill px-4">Manage Profile</a>
+        </div>
+    </section>
+
+    <footer class="py-5 text-center border-top mt-5" style="border-color: rgba(154, 124, 101, 0.2); background: rgba(12, 46, 61, 0.2);">
+        <p class="small" style="color: var(--sand-beige);">&copy; 2026 RevDynamics. Select your ride.</p>
+    </footer>
+
+    <script src="/js/vehicle-manager.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/api-client.js"></script>
+    <script src="/js/auth-guard.js"></script>
+    <script>
+        (async function() {
+            try {
+                const result = await fetch('/api/check-auth', { credentials: 'include' });
+                const data = await result.json();
+                if (!data.authenticated) {
+                    window.location.href = 'welcome.html';
+                    return;
+                }
+                await updateNavButtons();
+            } catch (err) {
+                window.location.href = 'welcome.html';
+            }
+        })();
+
+        async function updateNavButtons() {
+            try {
+                const result = await fetch('/api/check-auth', { credentials: 'include' });
+                const data = await result.json();
+                const navButtons = document.getElementById('nav-buttons');
+                if (data.authenticated && navButtons) {
+                    navButtons.innerHTML = `
+                        <a href="profile.html" class="btn btn-outline-primary rounded-pill px-3 fw-semibold">
+<i class="fas fa-user-cog me-2"></i>
+                        </a>
+                        <a href="#" class="btn rounded-pill px-4" onclick="logout()" style="background: linear-gradient(135deg, var(--metallic-bronze), #DC2626); color: var(--light-cream);">Logout</a>
+                    `;
+                }
+            } catch (err) {}
+        }
+
+        async function logout() {
+            await fetch('/api/logout', { method: 'POST', credentials: 'include' });
+            window.location.href = 'welcome.html';
+        }
+const categoryMap = {
+             'All Vehicles': [],
+             'Muscle Cars': ['mustang-gt', 'corvette'],
+             'Import Tuners': ['bmw-m3', 'audi-rs6', 'supra', 'gtr', 'civic-type-r', 'honda-civic'],
+             'Exotics': ['amg-gt'],
+             'European': ['bmw-m3', 'audi-rs6', 'amg-gt'],
+             'Japanese': ['supra', 'gtr', 'civic-type-r', 'toyota-corolla', 'honda-civic', 'suzuki-alto', 'suzuki-swift'],
+             'Domestic': ['mustang-gt', 'corvette'],
+'Pakistani': []
+            };
+            
+     function renderVehicles(vehicles) {
+         const container = document.getElementById('vehicles-container');
+         if (!container) return;
+         
+         categoryMap['All Vehicles'] = vehicles.map(v => v.id || (v.make + '-' + v.model.toLowerCase().replace(/\s+/g, '-')));
+         categoryMap['Pakistani'] = vehicles.filter(v => 
+             ['Toyota', 'Honda', 'Suzuki', 'Mitsubishi', 'Hyundai', 'KIA', 'FAW', 'Changan', 'Haval', 'MG', 'Proton', 'DFSK', 'JAC', 'ZOTYE', 'Lifan', 'Peugeot'].includes(v.make) &&
+             v.year < 2024
+         ).map(v => v.id || (v.make + '-' + v.model.toLowerCase().replace(/\s+/g, '-')));
+         
+         container.innerHTML = vehicles.map(v => {
+             const vehicleId = v.id || (v.make + '-' + v.model.toLowerCase().replace(/\s+/g, '-'));
+             const displayName = v.model.replace(' Avant', '').replace(' C8', ' C8').replace(' Altis', '');
+             return `
+                 <div class="col-lg-3 col-md-4 col-6">
+                     <div class="vehicle-card p-3 text-center cursor-pointer shadow-sm" data-vehicle="${vehicleId}">
+                         <img src="https://via.placeholder.com/150x100/0C2E3D/DAC6B6?text=${encodeURIComponent(v.make + ' ' + displayName)}" alt="${v.make} ${v.model}" class="mb-3 rounded">
+                         <h6 class="mb-1" style="color: var(--light-cream);">${v.model}</h6>
+                         <small style="color: var(--sand-beige);">${v.year} • ${v.basePower} HP</small>
+                     </div>
+                 </div>
+             `;
+         }).join('');
+     }
+
+     async function loadVehicles() {
+         try {
+             const response = await fetch('/api/vehicles');
+             const vehicles = await response.json();
+             renderVehicles(vehicles);
+         } catch (e) {
+             console.error('Failed to load vehicles:', e);
+             document.getElementById('vehicles-container').innerHTML = '<div class="text-center p-5" style="color: var(--sand-beige);">Failed to load vehicles</div>';
+         }
+     }
+
+// Handle category buttons after vehicles are loaded
+     function initCategoryButtons() {
+         const buttons = document.querySelectorAll('.d-flex.gap-2 .btn');
+         buttons.forEach(btn => {
+             btn.addEventListener('click', function() {
+                 buttons.forEach(b => b.classList.remove('active'));
+                 this.classList.add('active');
+                 
+                 const category = this.textContent;
+                 const vehiclesToShow = categoryMap[category] || categoryMap['All Vehicles'];
+                 
+                 document.querySelectorAll('.vehicle-card').forEach(card => {
+                     const vehicle = card.dataset.vehicle;
+                     const col = card.closest('.col-lg-3');
+                     if (col) {
+                         col.style.display = vehiclesToShow.includes(vehicle) || category === 'All Vehicles' ? 'block' : 'none';
+                     }
+                 });
+             });
+         });
+     }
+
+document.addEventListener('DOMContentLoaded', function() {
+         loadVehicles().then(() => {
+             initCategoryButtons();
+             initVehicleSelect();
+         });
+     });
+    </script>
+</body>
+</html>

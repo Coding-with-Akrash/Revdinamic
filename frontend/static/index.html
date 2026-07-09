@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RevDynamics | AI-Powered Vehicle Performance Engineering</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body style="background: linear-gradient(135deg, #000101 0%, #0C2E3D 50%, #000101 100%); min-height: 100vh;">
+
+    <nav class="navbar navbar-expand-lg py-3">
+        <div class="container">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="index.html">
+                <img src="IMG/Gemini_Generated_Image_29cg2x29cg2x29cg.png" style="width:44.59px;height:44.59px;">
+                <span class="text-gradient">RevDynamics</span>
+            </a>
+            <div class="ms-auto d-flex gap-2" id="nav-buttons">
+                <a href="vehicle-select.html?return=dyno-tune.html&tab=manual" class="btn btn-outline-primary rounded-pill px-4 fw-semibold">Vehicle Select</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="container text-center py-5 mt-5">
+        <span class="badge mb-3 px-3 py-2 rounded-pill fw-bold" style="background: rgba(24, 103, 132, 0.2); color: var(--performance-blue);">AI-POWERED DYNO TUNING</span>
+        <h1 class="hero-title mb-4"><span class="text-gradient">AI-Powered Vehicle Performance Engineering</span></h1>
+        <p class="lead mb-5 text-secondary-visible" style="max-width: 700px; font-size: 1.2rem;">
+            Configure, Tune, Simulate, and Analyze Your Vehicle Performance in Real Time.
+        </p>
+        <div class="d-flex justify-content-center gap-3">
+            <button class="btn btn-primary btn-lg px-5 rounded-pill shadow" onclick="window.location.href='dyno-tune.html?tab=manual&vehicle=' + (localStorage.getItem('selectedVehicle')||'bmw-m3')">Start Tuning</button>
+            <button class="btn btn-outline-primary btn-lg px-5 rounded-pill border" onclick="window.location.href='vehicle-select.html?return=dyno-tune.html&tab=manual'">View Live Data</button>
+        </div>
+    </header>
+
+    <!-- Feature Cards: Vehicle Configuration, AI Performance Advisor, Virtual Dyno Tuning -->
+    <section class="container py-5">
+        <div class="text-center mb-4">
+            <h2 class="display-6 fw-bold" style="color: var(--light-cream);">Performance Engineering Suite</h2>
+            <p class="text-secondary-visible">Comprehensive tools for every tuning requirement</p>
+        </div>
+        <div class="row g-4 mt-4">
+            <div class="col-md-4">
+                <div class="feature-card h-100 p-4 text-center">
+                    <div class="icon-box mb-3 p-3 rounded-circle d-inline-block"><i class="fas fa-bolt fs-3" style="color: var(--metallic-bronze);"></i></div>
+                    <h3 class="mb-3" style="color: var(--light-cream);">Vehicle Configuration</h3>
+                    <p class="mb-0 text-secondary-visible">Configure every aspect of your vehicle with precision engineering tools.</p>
+                    <a href="vehicle-select.html?return=dyno-tune.html&tab=manual" class="btn btn-outline-primary btn-sm rounded-pill mt-3 px-4">Configure Now</a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card h-100 p-4 text-center">
+                    <div class="icon-box mb-3 p-3 rounded-circle d-inline-block"><i class="fas fa-microchip fs-3" style="color: var(--performance-blue);"></i></div>
+                    <h3 class="mb-3" style="color: var(--light-cream);">AI Performance Advisor</h3>
+                    <p class="mb-0 text-secondary-visible">Receive intelligent upgrade recommendations tailored to your build.</p>
+                    <button class="btn btn-outline-primary btn-sm rounded-pill mt-3 px-4" onclick="showAiRecommendations()">Get Recommendations</button>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card h-100 p-4 text-center">
+                    <div class="icon-box mb-3 p-3 rounded-circle d-inline-block"><i class="fas fa-gauge-high fs-3" style="color: var(--metallic-bronze);"></i></div>
+                    <h3 class="mb-3" style="color: var(--light-cream);">Virtual Dyno Tuning</h3>
+                    <p class="mb-0 text-secondary-visible">Analyze horsepower and torque curves before modifications.</p>
+                    <button class="btn btn-outline-primary btn-sm rounded-pill mt-3 px-4" onclick="window.location.href='dyno-tune.html?vehicle=' + (localStorage.getItem('selectedVehicle')||'bmw-m3')">Start Tuning</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Innovation Stats Slide -->
+    <section class="container my-5">
+        <div class="innovation-box text-center p-5 rounded-4">
+            <p class="text-uppercase small fw-bold ls-2" style="color: var(--sand-beige);">AI-Powered Analytics</p>
+            <h2 class="display-5 fw-bold mb-4" style="color: var(--light-cream);">Smart Dyno Tuning</h2>
+            <p class="opacity-75 mb-5 mx-auto" style="max-width: 600px; color: var(--sand-beige);">Our AI analyzes thousands of data points to recommend optimal tuning configurations for your specific vehicle and goals.</p>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <h3 class="display-6 fw-bold innovation-stat" id="accuracy-stat">98.2%</h3>
+                    <p class="small" style="color: var(--sand-beige);">Tuning Accuracy</p>
+                </div>
+                <div class="col-md-4">
+                    <h3 class="display-6 fw-bold innovation-stat" id="time-stat">-65%</h3>
+                    <p class="small" style="color: var(--sand-beige);">Tuning Time Saved</p>
+                </div>
+                <div class="col-md-4">
+                    <h3 class="display-6 fw-bold innovation-stat" id="power-stat">+22%</h3>
+                    <p class="small" style="color: var(--sand-beige);">Avg Power Gain</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- OBD Integration, Parts Marketplace, Performance Comparison -->
+    <section class="container py-5">
+        <div class="text-center mb-4">
+            <h2 class="display-6 fw-bold" style="color: var(--light-cream);">Integration & Marketplace</h2>
+            <p class="text-secondary-visible">Connect, compare, and acquire performance parts</p>
+        </div>
+        <div class="row g-4 mt-4">
+            <div class="col-md-4">
+                <div class="feature-card h-100 p-4 text-center">
+                    <div class="icon-box mb-3 p-3 rounded-circle d-inline-block"><i class="fas fa-plug fs-3" style="color: var(--sand-beige);"></i></div>
+                    <h3 class="mb-3" style="color: var(--light-cream);">OBD Integration</h3>
+                    <p class="mb-0 text-secondary-visible">Connect and monitor live vehicle telemetry in real-time.</p>
+                    <button class="btn btn-outline-primary btn-sm rounded-pill mt-3 px-4" onclick="connectObd()">Connect Now</button>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card h-100 p-4 text-center">
+                    <div class="icon-box mb-3 p-3 rounded-circle d-inline-block"><i class="fas fa-shopping-cart fs-3" style="color: var(--performance-blue);"></i></div>
+                    <h3 class="mb-3" style="color: var(--light-cream);">Parts Marketplace</h3>
+                    <p class="mb-0 text-secondary-visible">Explore compatible performance upgrades with AI matching.</p>
+                    <button class="btn btn-outline-primary btn-sm rounded-pill mt-3 px-4" onclick="window.location.href='parts-catalog.html?return=dyno-tune.html&vehicle=' + (localStorage.getItem('selectedVehicle')||'bmw-m3')">Browse Parts</button>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card h-100 p-4 text-center">
+                    <div class="icon-box mb-3 p-3 rounded-circle d-inline-block"><i class="fas fa-chart-line fs-3" style="color: var(--metallic-bronze);"></i></div>
+                    <h3 class="mb-3" style="color: var(--light-cream);">Performance Comparison</h3>
+                    <p class="mb-0 text-secondary-visible">Compare stock and modified setups with detailed analytics.</p>
+                    <button class="btn btn-outline-primary btn-sm rounded-pill mt-3 px-4" onclick="comparePerformance()">Compare Now</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Recommendations Panel -->
+    <section class="container py-5">
+        <div class="card bg-gradient-light border-0 rounded-4 shadow-sm overflow-hidden" style="background: rgba(12, 46, 61, 0.3);">
+            <div class="row g-0">
+                <div class="col-lg-4 p-5 d-flex flex-column justify-content-center" style="background: linear-gradient(135deg, var(--performance-blue) 0%, var(--metallic-bronze) 100%);">
+                    <i class="fas fa-brain fa-3x mb-3" style="color: var(--light-cream);"></i>
+                    <h3 class="fw-bold mb-3" style="color: var(--light-cream);">AI Tuning Advisor</h3>
+                    <p class="opacity-75" style="color: var(--sand-beige);">Get personalized recommendations based on your vehicle, goals, and current mods.</p>
+                    <div class="mt-3">
+                        <span class="badge mb-2" style="background: var(--light-cream); color: var(--dark-blue);">Smart Analysis</span>
+                        <span class="badge ms-2 mb-2" style="background: var(--light-cream); color: var(--dark-blue);">Cost-Effective</span>
+                        <span class="badge ms-2 mb-2" style="background: var(--light-cream); color: var(--dark-blue);">Goal-Oriented</span>
+                    </div>
+                </div>
+                <div class="col-lg-8 p-5">
+                    <h4 class="fw-bold mb-4" style="color: var(--light-cream);">Your Personalized Tuning Path</h4>
+                    
+                    <!-- Goal Selection -->
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold" style="color: var(--sand-beige);">Select Your Goal</label>
+                        <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" name="goal" id="goal-daily" value="daily" checked>
+                            <label class="btn btn-outline-primary" for="goal-daily">Daily Driver</label>
+                            
+                            <input type="radio" class="btn-check" name="goal" id="goal-track" value="track">
+                            <label class="btn btn-outline-primary" for="goal-track">Track</label>
+                            
+                            <input type="radio" class="btn-check" name="goal" id="goal-drag" value="drag">
+                            <label class="btn btn-outline-primary" for="goal-drag">Drag</label>
+                            
+                            <input type="radio" class="btn-check" name="goal" id="goal-street" value="street">
+                            <label class="btn btn-outline-primary" for="goal-street">Street Performance</label>
+                        </div>
+                    </div>
+                    
+                    <!-- Budget Slider -->
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold d-flex justify-content-between">
+                            <span style="color: var(--sand-beige);">Tuning Budget</span>
+                            <span class="fw-bold" id="budget-display" style="color: var(--performance-blue);">$5,000</span>
+                        </label>
+                        <input type="range" class="form-range" min="500" max="20000" step="500" value="5000" id="budget-slider">
+                        <div class="d-flex justify-content-between small" style="color: var(--sand-beige);">
+                            <span>$500</span>
+                            <span>$5k</span>
+                            <span>$10k</span>
+                            <span>$20k</span>
+                        </div>
+                    </div>
+                    
+                    <!-- AI Recommendations Output -->
+                    <div id="ai-recommendations">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="spinner-border spinner-border-sm me-2" role="status" style="color: var(--performance-blue);"></div>
+                            <span class="small" style="color: var(--sand-beige);">AI is analyzing your vehicle...</span>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary w-100 mt-3">
+                        <i class="fas fa-magic me-2"></i>Generate AI Tuning Plan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container py-5">
+        <div class="text-center py-5 rounded-4" style="background: rgba(12, 46, 61, 0.3);">
+            <h2 class="fw-bold mb-3" style="color: var(--light-cream);">Ready to Tune Your Vehicle?</h2>
+            <p class="mb-4" style="color: var(--sand-beige);">Connect your OBD-II adapter and start analyzing real-time data with AI-powered recommendations.</p>
+            <div class="d-flex justify-content-center gap-3">
+                <button class="btn btn-primary btn-lg rounded-pill px-5" onclick="window.location.href='parts-catalog.html?return=dyno-tune.html&vehicle=' + (localStorage.getItem('selectedVehicle')||'bmw-m3')">Browse Parts</button>
+                <button class="btn btn-outline-primary btn-lg rounded-pill px-5 border" onclick="window.location.href='vehicle-select.html?return=dyno-tune.html&tab=manual'">Select Vehicle</button>
+            </div>
+        </div>
+    </section>
+
+    <div class="ai-agent-wrapper">
+        <input type="checkbox" id="agent-check">
+        <div class="chat-popup shadow-lg">
+            <div class="p-3 fw-bold d-flex align-items-center" style="background: linear-gradient(135deg, var(--performance-blue) 0%, var(--metallic-bronze) 100%); color: var(--light-cream);">
+                <i class="fas fa-robot me-2"></i> Dyno AI Assistant
+                <button class="btn btn-sm ms-auto" id="chat-close" style="color: var(--light-cream);"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="p-4 small scrollable-chat" id="chat-messages">
+                <div class="chat-message bot" style="background: rgba(24, 103, 132, 0.1); color: var(--light-cream); border: 1px solid rgba(24, 103, 132, 0.2);">
+                    Hello! I'm your AI tuning assistant. Ask me about OBD-II data, dyno results, or tuning recommendations!
+                </div>
+            </div>
+            <div class="p-2 border-top" style="background: rgba(12, 46, 61, 0.2);">
+                <div class="input-group">
+                    <input type="text" class="form-control border-0" id="chat-input" placeholder="Ask about tuning..." style="background: rgba(255,255,255,0.1); color: var(--light-cream);">
+                    <button class="btn" id="chat-send" style="background: var(--performance-blue); color: var(--light-cream);"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+        <label for="agent-check" class="agent-bubble shadow">
+            <i class="fas fa-robot"></i>
+        </label>
+    </div>
+
+    <footer class="py-5 text-center border-top" style="border-color: rgba(154, 124, 101, 0.2); background: rgba(12, 46, 61, 0.2);">
+        <p class="small" style="color: var(--sand-beige);">&copy; 2026 RevDynamics. AI-Powered Vehicle Performance Engineering.</p>
+    </footer>
+
+    <script src="/js/vehicle-manager.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            updateNavButtons();
+            animateStats();
+            
+            // Chat functionality
+            const chatInput = document.getElementById('chat-input');
+            const chatSend = document.getElementById('chat-send');
+            const chatMessages = document.getElementById('chat-messages');
+            const agentCheck = document.getElementById('agent-check');
+            const chatClose = document.getElementById('chat-close');
+            
+            if (chatSend) {
+                chatSend.addEventListener('click', sendMessage);
+            }
+            if (chatInput) {
+                chatInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') sendMessage();
+                });
+            }
+            if (chatClose) {
+                chatClose.addEventListener('click', function() {
+                    agentCheck.checked = false;
+                });
+            }
+        });
+
+        function sendMessage() {
+            const chatInput = document.getElementById('chat-input');
+            const chatMessages = document.getElementById('chat-messages');
+            const message = chatInput.value.trim();
+            if (!message) return;
+            
+            // Add user message
+            const userMsg = document.createElement('div');
+            userMsg.className = 'chat-message user';
+            userMsg.style.cssText = 'background: rgba(154, 124, 101, 0.2); color: var(--light-cream); border: 1px solid rgba(154, 124, 101, 0.3);';
+            userMsg.textContent = message;
+            chatMessages.appendChild(userMsg);
+            chatInput.value = '';
+            
+            // Get AI response
+            setTimeout(() => {
+                const botMsg = document.createElement('div');
+                botMsg.className = 'chat-message bot';
+                botMsg.style.cssText = 'background: rgba(24, 103, 132, 0.1); color: var(--light-cream); border: 1px solid rgba(24, 103, 132, 0.2);';
+                botMsg.textContent = getTuningAdvice(message);
+                chatMessages.appendChild(botMsg);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 500);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function getTuningAdvice(question) {
+            const q = question.toLowerCase();
+            if (q.includes('afm') || q.includes('air-fuel') || q.includes('afr')) {
+                return "For optimal AFR: Daily driving 14.7:1, Track 12.5-13.0:1, Drag racing 11.0-12.0:1. Consider your fuel type and modifications.";
+            } else if (q.includes('timing')) {
+                return "Timing advance depends on fuel octane. Race gas allows +5-8° over stock. Start conservative (+2°) and monitor knock levels.";
+            } else if (q.includes('boost') || q.includes('turbo')) {
+                return "Boost pressure should match your engine's compression ratio. Higher boost needs richer AFR and more timing retard. Monitor EGTs closely.";
+            } else if (q.includes('obd')) {
+                return "OBD-II provides real-time data for RPM, speed, throttle position, and sensor readings. Connect to our dyno for live telemetry monitoring.";
+            } else if (q.includes('gain') || q.includes('power')) {
+                return "Typical gains: Tune alone 5-15whp, Intake +10-15whp, Exhaust +15-25whp, Turbo upgrade +100-300whp depending on size.";
+            } else if (q.includes('recommend') || q.includes('parts')) {
+                return "Visit our parts catalog with OBD data for AI-matched upgrades. Filter by category, price, and compatibility.";
+            } else {
+                return "I can help with tuning parameters, OBD data interpretation, and part recommendations. What would you like to know?";
+            }
+        }
+
+        async function checkAuth() {
+            try {
+                const result = await fetch('/api/check-auth', { credentials: 'include' });
+                const data = await result.json();
+                if (!data.authenticated) {
+                    window.location.href = 'welcome.html';
+                }
+            } catch (err) {
+                window.location.href = 'welcome.html';
+            }
+        }
+
+        function animateStats() {
+            const stats = [
+                { id: "accuracy-stat", target: 98.2, suffix: "%" },
+                { id: "time-stat", target: -65, suffix: "%" },
+                { id: "power-stat", target: 22, suffix: "%" }
+            ];
+            stats.forEach(stat => {
+                const element = document.getElementById(stat.id);
+                if (element) {
+                    let start = 0;
+                    const duration = 2000;
+                    const step = stat.target > 0 ? stat.target / (duration / 16) : Math.abs(stat.target) / (duration / 16);
+                    const timer = setInterval(() => {
+                        start += step;
+                        if ((stat.target > 0 && start >= stat.target) || (stat.target < 0 && start >= Math.abs(stat.target))) {
+                            element.textContent = (stat.target > 0 ? "" : "-") + stat.target + stat.suffix;
+                            clearInterval(timer);
+                        } else {
+                            element.textContent = (stat.target > 0 ? "" : "-") + (stat.target > 0 ? start : Math.abs(start)).toFixed(0) + stat.suffix;
+                        }
+                    }, 16);
+                }
+            });
+        }
+
+        async function updateNavButtons() {
+            try {
+                const result = await fetch('/api/check-auth', { credentials: 'include' });
+                const data = await result.json();
+                const navButtons = document.getElementById('nav-buttons');
+                if (data.authenticated && navButtons) {
+                    const vehicle = window.vehicleManager?.getVehicle() || { make: 'BMW', model: 'M3' };
+                    navButtons.innerHTML = `
+                        <a href="profile.html" class="btn btn-outline-primary rounded-pill px-3 fw-semibold">
+                            <i class="fas fa-user-cog me-2"></i>
+                        </a>
+                        <span class="btn rounded-pill px-3 align-self-center" style="background: rgba(154, 124, 101, 0.2); color: var(--sand-beige);">
+                            <i class="fas fa-car me-2" style="color: var(--performance-blue);"></i>${vehicle.make} ${vehicle.model}
+                        </span>
+                    `;
+                }
+            } catch (err) {}
+        }
+
+        function showAiRecommendations() {
+            document.getElementById('ai-recommendations').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function connectObd() {
+            alert('OBD connection interface coming soon!');
+        }
+
+        function comparePerformance() {
+            alert('Performance comparison tool coming soon!');
+        }
+    </script>
+</body>
+</html>

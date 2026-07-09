@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build Summary | RevDynamics</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        :root {
+            --primary-black: #000101;
+            --dark-blue: #0C2E3D;
+            --performance-blue: #186784;
+            --metallic-bronze: #9A7C65;
+            --sand-beige: #C0A088;
+            --light-cream: #DAC6B6;
+            --white: #FFFFFF;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--primary-black) 0%, var(--dark-blue) 50%, var(--primary-black) 100%);
+            min-height: 100vh;
+            color: var(--light-cream);
+        }
+        
+        .build-card {
+            background: rgba(12, 46, 61, 0.4);
+            border: 1px solid rgba(154, 124, 101, 0.3);
+            border-radius: 16px;
+        }
+        
+        .stat-box {
+            background: rgba(24, 103, 132, 0.1);
+            border: 1px solid rgba(24, 103, 132, 0.2);
+            border-radius: 12px;
+            padding: 1rem;
+        }
+        
+        .total-cost {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--performance-blue);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg py-3">
+        <div class="container">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="index.html">
+                <img src="IMG/Gemini_Generated_Image_29cg2x29cg2x29cg.png" style="width:44.59px;height:44.59px;">
+                <span class="text-gradient">RevDynamics</span>
+            </a>
+        </div>
+    </nav>
+
+    <header class="container text-center py-5">
+        <span class="badge mb-3 px-3 py-2 rounded-pill fw-bold" style="background: rgba(24, 103, 132, 0.2); color: var(--performance-blue);">BUILD SUMMARY</span>
+        <h1 class="hero-title mb-4"><span class="text-gradient">Build Cost Summary</span></h1>
+        <div class="mb-3" id="vehicle-info" style="color: var(--sand-beige); display: none;">
+            <i class="fas fa-car me-2" style="color: var(--performance-blue);"></i>
+            <span id="vehicle-display-name">BMW M3</span>
+            <span class="mx-2">•</span>
+            <span id="vehicle-display-stats">503 HP, 550 Nm</span>
+        </div>
+    </header>
+
+    <section class="container py-4">
+        <ul class="nav nav-tabs mb-4" role="tablist" style="border-bottom: 1px solid rgba(154, 124, 101, 0.3);">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#overview-tab" type="button" style="color: var(--performance-blue); border-color: transparent;">Overview</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#changes-tab" type="button" style="color: var(--metallic-bronze); border-color: transparent;">Changes</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#parts-tab" type="button" style="color: var(--sand-beige); border-color: transparent;">Installed Parts</button>
+            </li>
+        </ul>
+        
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="overview-tab">
+                <div class="row mb-4">
+                    <div class="col-md-4 mx-auto mb-3">
+                        <div class="build-card p-3 text-center">
+                            <h6 class="mb-2" style="color: var(--sand-beige);"><i class="fas fa-shopping-cart me-2"></i>Total Cost</h6>
+                            <div class="total-cost" id="total-cost-display">$0</div>
+                            <small class="text-muted"><span id="parts-count-display">0</span> parts</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mx-auto mb-3">
+                        <div class="build-card p-3 text-center">
+                            <h6 class="mb-2" style="color: var(--sand-beige);"><i class="fas fa-bolt me-2"></i>Power Gain</h6>
+                            <div style="font-size: 2rem; font-weight: 600; color: #28a745;" id="power-gain-display">+0 HP</div>
+                            <small class="text-muted">+<span id="torque-gain-display">0</span> Nm torque<br><span id="boost-gain-display">+0</span> psi boost • <span id="timing-gain-display">+0</span>° timing</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mx-auto mb-3">
+                        <div class="build-card p-3 text-center">
+                            <h6 class="mb-2" style="color: var(--sand-beige);"><i class="fas fa-clock me-2"></i>Time Required</h6>
+                            <div style="font-size: 2rem; font-weight: 600; color: var(--metallic-bronze);" id="time-display">0 hours</div>
+                            <small class="text-muted">Installation time</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-pane fade" id="changes-tab">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="build-card p-4">
+                            <h6 class="mb-3" style="color: var(--sand-beige);"><i class="fas fa-info-circle me-2"></i>Initial Specs</h6>
+                            <div class="row g-2">
+                                <div class="col-6"><strong style="color: var(--sand-beige);">HP:</strong> <span id="initial-hp" style="color: var(--light-cream);">503</span></div>
+                                <div class="col-6"><strong style="color: var(--sand-beige);">Torque:</strong> <span id="initial-torque" style="color: var(--light-cream);">550</span> Nm</div>
+                                <div class="col-6"><strong style="color: var(--sand-beige);">Boost:</strong> <span id="initial-boost" style="color: var(--light-cream);">10</span> psi</div>
+                                <div class="col-6"><strong style="color: var(--sand-beige);">Timing:</strong> <span id="initial-timing" style="color: var(--light-cream);">15°</span></div>
+                                <div class="col-6"><strong style="color: var(--sand-beige);">AFR:</strong> <span id="initial-afr" style="color: var(--light-cream);">14.7:1</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="build-card p-4">
+                            <h6 class="mb-3" style="color: var(--sand-beige);"><i class="fas fa-flag-checkered me-2"></i>Final Specs</h6>
+                            <div class="row g-2">
+                                <div class="col-6"><strong style="color: var(--sand-beige);">HP:</strong> <span id="final-hp" class="text-success">503 HP</span></div>
+                                <div class="col-6"><strong style="color: var(--sand-beige);">Torque:</strong> <span id="final-torque" class="text-warning">550 Nm</span></div>
+                                <div class="col-6"><strong style="color: var(--sand-beige);">Boost:</strong> <span id="final-boost" style="color: var(--performance-blue);">10 psi</span></div>
+                                <div class="col-6"><strong style="color: var(--sand-beige);">Timing:</strong> <span id="final-timing" style="color: var(--metallic-bronze);">15°</span></div>
+                                <div class="col-6"><strong style="color: var(--sand-beige);">AFR:</strong> <span id="final-afr" class="text-info">14.7:1</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="build-card p-4 mt-4">
+                    <h6 class="mb-3" style="color: var(--sand-beige);"><i class="fas fa-exchange-alt me-2"></i>Changes Summary</h6>
+                    <div id="changes-list">
+                        <p class="text-muted">No changes to display. Add parts to see specification changes.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-pane fade" id="parts-tab">
+                <div class="build-card p-4">
+                    <h6 class="mb-3" style="color: var(--sand-beige);"><i class="fas fa-list me-2"></i>Installed Parts</h6>
+                    <div id="installed-parts-list">
+                        <p class="text-muted">No parts installed yet. Return to the Parts Catalog to add parts.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-4">
+            <button class="btn btn-lg px-5 rounded-pill" onclick="applyBuild()" style="background: linear-gradient(135deg, var(--performance-blue), var(--metallic-bronze)); color: var(--light-cream);">
+                <i class="fas fa-wrench me-2"></i>Apply Build
+            </button>
+            <a href="parts-catalog.html" class="btn btn-outline-secondary btn-lg px-5 rounded-pill ms-2">
+                <i class="fas fa-arrow-left me-2"></i>Back to Catalog
+            </a>
+        </div>
+    </section>
+
+    <footer class="py-5 text-center border-top mt-5" style="border-color: rgba(154, 124, 101, 0.3);">
+        <small style="color: var(--sand-beige);">&copy; 2026 RevDynamics. Build Summary.</small>
+    </footer>
+
+    <script src="/js/vehicle-manager.js"></script>
+    <script src="/js/api-client.js"></script>
+    <script>
+        // Define all parts for lookup FIRST
+        window.PARTS_DB = [
+            {id: 'cold-air-intake', name: 'Cold Air Intake System', category: 'intake', powerGain: 12, torqueGain: 18, boostGain: 0, timingGain: 0, cost: 499, difficulty: 1, stages: [1]},
+            {id: 'short-ram-intake', name: 'Short Ram Intake', category: 'intake', powerGain: 8, torqueGain: 12, boostGain: 0, timingGain: 0, cost: 299, difficulty: 1, stages: [1]},
+            {id: 'high-flow-filter', name: 'High-Flow Air Filter', category: 'intake', powerGain: 5, torqueGain: 8, boostGain: 0, timingGain: 0, cost: 129, difficulty: 1, stages: [1]},
+            {id: 'cat-back-exhaust', name: 'Cat-Back Exhaust System', category: 'exhaust', powerGain: 18, torqueGain: 15, boostGain: 0, timingGain: 2, cost: 1299, difficulty: 2, stages: [1]},
+            {id: 'turbo-back-exhaust', name: 'Turbo-Back Exhaust', category: 'exhaust', powerGain: 35, torqueGain: 25, boostGain: 2, timingGain: 3, cost: 2499, difficulty: 3, stages: [2, 3]},
+            {id: 'axle-back-exhaust', name: 'Axle-Back Exhaust', category: 'exhaust', powerGain: 12, torqueGain: 10, boostGain: 0, timingGain: 1, cost: 899, difficulty: 2, stages: [1]},
+            {id: 'ecu-remap', name: 'ECU Performance Remap', category: 'tuning', powerGain: 45, torqueGain: 60, boostGain: 3, timingGain: 8, cost: 799, difficulty: 1, stages: [1]},
+            {id: 'stand-alone-ecu', name: 'Standalone ECU System', category: 'tuning', powerGain: 120, torqueGain: 150, boostGain: 5, timingGain: 12, cost: 3499, difficulty: 5, stages: [3]},
+            {id: 'turbo-upgrade', name: 'Turbocharger Upgrade', category: 'forced-induction', powerGain: 80, torqueGain: 100, boostGain: 8, timingGain: 5, cost: 2999, difficulty: 4, stages: [2, 3]},
+            {id: 'supercharger-kit', name: 'Supercharger Kit', category: 'forced-induction', powerGain: 75, torqueGain: 85, boostGain: 0, timingGain: 10, cost: 2799, difficulty: 4, stages: [2, 3]},
+            {id: 'intercooler', name: 'Front Mount Intercooler', category: 'forced-induction', powerGain: 25, torqueGain: 30, boostGain: 0, timingGain: 0, cost: 1199, difficulty: 3, stages: [2]},
+            {id: 'wastegate-upgrade', name: 'External Wastegate', category: 'forced-induction', powerGain: 15, torqueGain: 20, boostGain: 4, timingGain: 0, cost: 499, difficulty: 2, stages: [2]},
+            {id: 'fuel-injectors', name: 'High-Flow Fuel Injectors', category: 'fuel', powerGain: 0, torqueGain: 0, boostGain: 0, timingGain: 0, cost: 699, difficulty: 3, stages: [2, 3]},
+            {id: 'fuel-pump', name: 'High-Pressure Fuel Pump', category: 'fuel', powerGain: 0, torqueGain: 0, boostGain: 0, timingGain: 0, cost: 1299, difficulty: 4, stages: [3]},
+            {id: 'forged-pistons', name: 'Forged Pistons', category: 'engine', powerGain: 0, torqueGain: 0, boostGain: 0, timingGain: 5, cost: 1899, difficulty: 5, stages: [3]},
+            {id: 'connecting-rods', name: 'Connecting Rods', category: 'engine', powerGain: 0, torqueGain: 0, boostGain: 0, timingGain: 0, cost: 1499, difficulty: 5, stages: [3]},
+            {id: 'valve-springs', name: 'Upgrade Valve Springs', category: 'engine', powerGain: 0, torqueGain: 0, boostGain: 0, timingGain: 8, cost: 599, difficulty: 4, stages: [2, 3]},
+            {id: 'brake-kit-front', name: 'Front Big Brake Kit', category: 'brakes', powerGain: 0, torqueGain: 0, boostGain: 0, timingGain: 0, cost: 2499, difficulty: 3, stages: [2, 3]},
+            {id: 'brake-kit-rear', name: 'Rear Brake Kit', category: 'brakes', powerGain: 0, torqueGain: 0, boostGain: 0, timingGain: 0, cost: 1299, difficulty: 2, stages: [1, 2]},
+            {id: 'wheels-18x9', name: '18x9 Lightweight Wheels', category: 'wheels', powerGain: 10, torqueGain: 0, boostGain: 0, timingGain: 0, cost: 1999, difficulty: 2, stages: [1]},
+            {id: 'racing-slicks', name: 'Racing Slicks', category: 'wheels', powerGain: 15, torqueGain: 0, boostGain: 0, timingGain: 0, cost: 899, difficulty: 1, stages: [2]}
+        ];
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = 'position-fixed bottom-0 end-0 p-3';
+            toast.style.zIndex = '1050';
+            toast.innerHTML = '<div class="toast show align-items-center text-bg-' + type + ' border-0" role="alert">' +
+                '<div class="d-flex"><div class="toast-body">' + message + '</div></div></div>';
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        async function applyBuild() {
+            const savedVehicle = localStorage.getItem('currentVehicle') || 'bmw-m3';
+            // Load full part objects from installedPartsData first (primary source)
+            const savedParts = localStorage.getItem('installedPartsData');
+            let installedParts = [];
+            if (savedParts) {
+                try {
+                    installedParts = JSON.parse(savedParts);
+                } catch (e) {}
+            }
+            
+            // If no parts in installedPartsData, try vehicleBuilds
+            if (installedParts.length === 0) {
+                const savedBuilds = localStorage.getItem('vehicleBuilds');
+                if (savedBuilds) {
+                    try {
+                        const builds = JSON.parse(savedBuilds);
+                        const partIds = builds[savedVehicle] || [];
+                        // Convert part IDs to full part objects
+                        installedParts = partIds.map(id => window.PARTS_DB?.find(p => p.id === id)).filter(Boolean);
+                    } catch (e) {}
+                }
+            }
+            
+            if (installedParts.length === 0) {
+                showToast('No parts selected to apply.', 'warning');
+                return;
+            }
+            
+            let totalCost = 0, totalTime = 0, totalPower = 0, totalTorque = 0;
+            installedParts.forEach(part => {
+                totalCost += part.cost || 0;
+                totalTime += part.difficulty || 0;
+                totalPower += part.powerGain || 0;
+                totalTorque += part.torqueGain || 0;
+            });
+            
+            const currentVehicle = savedVehicle;
+            
+            try {
+                const result = await window.apiClient.saveVehicleBuild({
+                    vehicleId: currentVehicle,
+                    installedParts: installedParts
+                });
+                
+                if (result.success) {
+                    showToast(`Build applied! +${totalPower}HP / +${totalTorque}Nm • $${totalCost.toLocaleString()}`, 'success');
+                } else {
+                    showToast(result.error || 'Failed to save build', 'error');
+                }
+            } catch (err) {
+                showToast(`Build applied! +${totalPower}HP • $${totalCost.toLocaleString()}`, 'success');
+            }
+        }
+        
+async function updateBuildSummary() {
+    const savedVehicle = localStorage.getItem('currentVehicle') || 'bmw-m3';
+    
+    // Set the current vehicle in vehicleManager to ensure getVehicle() works
+    if (savedVehicle && window.vehicleManager) {
+        window.vehicleManager.currentVehicle = savedVehicle;
+    }
+    
+    // Load from database first if authenticated
+    let installed = [];
+    if (window.apiClient) {
+        try {
+            const result = await window.apiClient.getVehicleBuild(savedVehicle);
+            if (result.installedParts && result.installedParts.length > 0) {
+                installed = result.installedParts;
+                localStorage.setItem('installedPartsData', JSON.stringify(installed));
+            }
+        } catch (e) {}
+    }
+    
+    // Load full part objects from installedPartsData (primary source)
+    const savedParts = localStorage.getItem('installedPartsData');
+    if (installed.length === 0 && savedParts) {
+        try {
+            installed = JSON.parse(savedParts);
+        } catch (e) {}
+    }
+    
+    // If no parts in installedPartsData, try vehicleBuilds
+    if (installed.length === 0) {
+        const savedBuilds = localStorage.getItem('vehicleBuilds');
+        if (savedBuilds) {
+            try {
+                const builds = JSON.parse(savedBuilds);
+                const partIds = builds[savedVehicle] || [];
+                installed = partIds.map(id => window.PARTS_DB?.find(p => p.id === id)).filter(Boolean);
+            } catch (e) {}
+        }
+    }
+    
+    const vehicle = window.vehicleManager?.getVehicle() || { make: 'BMW', model: 'M3', basePower: 503, torque: 550 };
+    const savedBasePower = localStorage.getItem('basePower');
+    const savedBaseTorque = localStorage.getItem('baseTorque');
+    
+    let basePower = savedBasePower ? parseInt(savedBasePower) : (vehicle.basePower || 503);
+    let baseTorque = savedBaseTorque ? parseInt(savedBaseTorque) : (vehicle.torque || 550);
+    
+    // Update vehicle display
+    const vehicleInfoEl = document.getElementById('vehicle-info');
+    const vehicleNameEl = document.getElementById('vehicle-display-name');
+    const vehicleStatsEl = document.getElementById('vehicle-display-stats');
+    
+    if (vehicleInfoEl) {
+        vehicleInfoEl.style.display = 'block';
+        if (vehicleNameEl) {
+            const veh = window.vehicleManager?.getVehicle() || { make: 'BMW', model: 'M3' };
+            vehicleNameEl.textContent = veh.make + ' ' + veh.model;
+        }
+        if (vehicleStatsEl) {
+            vehicleStatsEl.textContent = basePower + ' HP, ' + baseTorque + ' Nm';
+        }
+    }
+    
+    let totalCost = 0, totalTime = 0, totalPower = 0, totalTorque = 0, totalBoost = 0, totalTiming = 0;
+    installed.forEach(part => {
+        totalCost += part.cost || 0;
+        totalTime += part.difficulty || 0;
+        totalPower += part.powerGain || 0;
+        totalTorque += part.torqueGain || 0;
+        totalBoost += part.boostGain || 0;
+        totalTiming += part.timingGain || 0;
+    });
+    
+    document.getElementById('total-cost-display').textContent = '$' + totalCost.toLocaleString();
+    document.getElementById('parts-count-display').textContent = installed.length;
+    document.getElementById('power-gain-display').textContent = '+' + totalPower + ' HP';
+    document.getElementById('torque-gain-display').textContent = '+' + totalTorque + ' Nm';
+    document.getElementById('time-display').textContent = totalTime + ' hours';
+    // Update initial specs
+    document.getElementById('initial-hp').textContent = basePower;
+    document.getElementById('initial-torque').textContent = baseTorque;
+    document.getElementById('initial-boost').textContent = '10 psi';
+    document.getElementById('initial-timing').textContent = '15°';
+    document.getElementById('initial-afr').textContent = '14.7:1';
+    
+    // Calculate final specs
+    const finalHP = basePower + totalPower;
+    const finalTorque = baseTorque + totalTorque;
+    const finalBoost = 10 + totalBoost;
+    const finalTiming = 15 + totalTiming;
+    const finalAFR = (14.7 - totalBoost * 0.1).toFixed(1);
+    
+    // Update final specs
+    document.getElementById('final-hp').textContent = finalHP + ' HP';
+    document.getElementById('final-torque').textContent = finalTorque + ' Nm';
+    document.getElementById('final-boost').textContent = finalBoost + ' psi';
+    document.getElementById('final-timing').textContent = finalTiming + '°';
+    document.getElementById('final-afr').textContent = finalAFR + ':1';
+    
+    // Update changes list
+    const changesListEl = document.getElementById('changes-list');
+    if (installed.length > 0) {
+        changesListEl.innerHTML = installed.map(part => 
+            '<div class="row py-2 border-bottom" style="border-color: rgba(154, 124, 101, 0.1);">' +
+                '<div class="col-5"><strong style="color: var(--light-cream);">' + part.name + '</strong><br><small class="text-muted">' + part.category + '</small></div>' +
+                '<div class="col-2 text-center"><span class="text-success">+' + (part.powerGain || 0) + ' HP</span></div>' +
+                '<div class="col-2 text-center"><span class="text-warning">+' + (part.torqueGain || 0) + ' Nm</span></div>' +
+                '<div class="col-2 text-center"><span style="color: var(--performance-blue);">+' + (part.boostGain || 0) + ' psi</span></div>' +
+                '<div class="col-1 text-end"><small class="text-muted">$' + (part.cost || 0).toLocaleString() + '</small></div>' +
+            '</div>'
+        ).join('');
+    } else {
+        changesListEl.innerHTML = '<p class="text-muted">No changes to display. Add parts to see specification changes.</p>';
+    }
+    
+    const listEl = document.getElementById('installed-parts-list');
+    if (installed.length > 0) {
+        listEl.innerHTML = installed.map(part =>
+            '<div class="d-flex justify-content-between py-2 border-bottom" style="border-color: rgba(154, 124, 101, 0.2);">' +
+                '<div><strong>' + part.name + '</strong><br><small class="text-muted">Stage ' + (part.stages?.[0] || 1) + '</small></div>' +
+                '<div class="text-end"><span class="text-success">+$' + (part.cost || 0).toLocaleString() + '</span><br><small class="text-warning">+' + (part.powerGain || 0) + ' HP • +' + (part.torqueGain || 0) + ' Nm<br>' + (part.difficulty || 0) + 'h install</small></div>' +
+            '</div>'
+        ).join('');
+    } else {
+        listEl.innerHTML = '<p class="text-muted">No parts installed yet. Return to the Parts Catalog to add parts.</p>';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', updateBuildSummary);
+window.addEventListener('storage', updateBuildSummary);
+    </script>
+</body>
+</html>

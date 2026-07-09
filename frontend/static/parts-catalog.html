@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Parts Catalog | RevDynamics</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        :root {
+            --primary-black: #000101;
+            --dark-blue: #0C2E3D;
+            --performance-blue: #186784;
+            --metallic-bronze: #9A7C65;
+            --sand-beige: #C0A088;
+            --light-cream: #DAC6B6;
+            --white: #FFFFFF;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--primary-black) 0%, var(--dark-blue) 50%, var(--primary-black) 100%);
+            min-height: 100vh;
+            color: var(--light-cream);
+        }
+        
+        .nav-tabs {
+            border-bottom: 1px solid rgba(154, 124, 101, 0.3);
+        }
+        
+        .nav-tabs .nav-link {
+            color: var(--sand-beige);
+            background: transparent;
+            border: 1px solid transparent;
+        }
+        
+        .nav-tabs .nav-link:hover {
+            color: var(--light-cream);
+            border-color: transparent;
+        }
+        
+        .nav-tabs .nav-link.active {
+            color: var(--performance-blue);
+            background: rgba(24, 103, 132, 0.1);
+            border-color: var(--metallic-bronze);
+        }
+        
+.part-card, .part-card.bg-white {
+     background: rgba(12, 46, 61, 0.4) !important;
+     border: 1px solid rgba(154, 124, 101, 0.3) !important;
+     border-radius: 16px !important;
+     color: var(--light-cream) !important;
+ }
+         
+         .part-image {
+             background: linear-gradient(135deg, var(--performance-blue), var(--metallic-bronze));
+         }
+         
+         .part-image-large {
+             background: linear-gradient(135deg, var(--performance-blue), var(--metallic-bronze));
+         }
+         
+         .part-image i, .part-image-large i, .part-image .fa-3x, .part-image-large .fa-3x, i.opacity-50, .part-icon {
+             opacity: 0.9 !important;
+             color: var(--light-cream) !important;
+         }
+         
+         .build-summary-card, .apply-build-card, .initial-specs-card, .changes-card, .final-specs-card {
+            background: linear-gradient(135deg, rgba(12, 46, 61, 0.4) 0%, rgba(24, 103, 132, 0.2) 100%);
+            border: 1px solid rgba(154, 124, 101, 0.3);
+        }
+        
+        .build-summary-card h6, .apply-build-card h6, .initial-specs-card h6, .changes-card h6 {
+            color: var(--performance-blue);
+        }
+        
+        .changes-card {
+            background: rgba(154, 124, 101, 0.1);
+            border: 1px solid var(--metallic-bronze);
+        }
+        
+        .changes-card h6 {
+            color: var(--metallic-bronze);
+        }
+        
+        .form-label.small, .text-muted {
+            color: var(--sand-beige) !important;
+        }
+        
+        .text-dark {
+            color: var(--light-cream) !important;
+        }
+        
+        .text-primary {
+            color: var(--performance-blue) !important;
+        }
+        
+        .bg-white {
+            background: linear-gradient(135deg, rgba(12, 46, 61, 0.4) 0%, rgba(24, 103, 132, 0.2) 100%) !important;
+        }
+        
+        .btn-outline-secondary {
+            color: var(--sand-beige);
+            border: 2px solid var(--sand-beige);
+            background: transparent;
+        }
+        
+        .btn-outline-secondary:hover {
+            background: var(--sand-beige);
+            border-color: var(--sand-beige);
+            color: var(--dark-blue);
+        }
+    </style>
+</head>
+<body class="welcome-page">
+
+<nav class="navbar navbar-expand-lg py-3">
+        <div class="container">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="index.html">
+                <img src="IMG/Gemini_Generated_Image_29cg2x29cg2x29cg.png" style="width:44.59px;height:44.59px;">
+                <span class="text-gradient">RevDynamics</span>
+            </a>
+            <div class="ms-auto d-flex gap-2">
+                <a href="profile.html" class="btn rounded-pill px-3 fw-semibold btn-outline-secondary">
+<i class="fas fa-user-cog text-primary"></i>
+                </a>
+                <a href="vehicle-select.html?return=parts-catalog.html" class="btn rounded-pill px-4 btn-outline-secondary">Back to Vehicle</a>
+            </div>
+        </div>
+    </nav>
+
+<header class="container text-center py-5 mt-5">
+        <span class="badge mb-3 px-3 py-2 rounded-pill fw-bold" style="background: rgba(24, 103, 132, 0.2); color: var(--performance-blue);">SMART PARTS CATALOG</span>
+        <h1 class="hero-title mb-4"><span class="text-gradient">Smart Parts Catalog</span></h1>
+        <p class="lead mb-5 text-secondary-visible" style="max-width: 700px; font-size: 1.2rem;">
+            AI-powered recommendations based on your vehicle. Select parts that match your build stage and goals.
+        </p>
+        
+<div class="d-flex justify-content-center gap-3">
+            <button class="btn btn-primary btn-lg px-5 rounded-pill shadow" data-bs-toggle="modal" data-bs-target="#aiAssistantModal">
+                <i class="fas fa-robot me-2"></i>Get AI Recommendations
+            </button>
+            <a href="build-summary.html" class="btn btn-outline-primary btn-lg px-5 rounded-pill border" onclick="prepareBuildSummary()">
+                <i class="fas fa-chart-line me-2"></i>Build Summary
+            </a>
+            <button class="btn btn-outline-primary btn-lg px-5 rounded-pill border" onclick="revertBuild()">
+                <i class="fas fa-undo me-2"></i>Revert Build
+            </button>
+        </div>
+     </header>
+     
+<section class="container py-4">
+<div class="row mb-4 align-items-center">
+            <div class="col-md-8 mx-auto">
+                <div class="feature-card h-100 p-4 text-center">
+                    <div class="icon-box mb-3 p-3 rounded-circle d-inline-block"><i class="fas fa-car fs-3" style="color: var(--metallic-bronze);"></i></div>
+                    <h5 class="mb-0" style="color: var(--sand-beige);"><i class="fas fa-car me-2" style="color: var(--performance-blue);"></i><span id="current-vehicle-name">BMW M3 (2024)</span></h5>
+                    <small class="text-secondary-visible" id="vehicle-specs">503 HP, 550 Nm • Stage Potential: Stock • <span id="parts-count-badge">0 Parts Installed</span></small>
+                    <div class="mt-2 small" id="vehicle-compatibility" style="color: var(--sand-beige);"><i class="fas fa-check-circle me-1" style="color: var(--performance-blue);"></i>Turbo Compatible • RWD • Redline: 7,200 RPM</div>
+                    <div class="mt-3"><span class="badge rounded-pill fs-6" id="vehicle-stage" style="background: linear-gradient(135deg, var(--performance-blue), var(--metallic-bronze)); color: var(--sand-beige);">Stage 1 Ready</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Filters -->
+    <section class="container py-4">
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <label class="form-label small fw-bold text-muted" style="color: var(--sand-beige);">Build Stage</label>
+                <select class="form-select" id="stage-filter">
+                    <option value="all">All Stages</option>
+                    <option value="1">Stage 1 - Basic (+0-70 HP)</option>
+                    <option value="2">Stage 2 - Intermediate (+70-150 HP)</option>
+                    <option value="3">Stage 3 - Full Bolt-On (+150+ HP)</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small fw-bold text-muted" style="color: var(--sand-beige);">Driving Goal</label>
+<select class="form-select" id="goal-filter">
+                     <option value="all">All Goals</option>
+                     <option value="daily">Daily Driver</option>
+                     <option value="street">Street Performance</option>
+                     <option value="track">Track / Track Day</option>
+                     <option value="drag">Drag Racing</option>
+                 </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small fw-bold text-muted" style="color: var(--sand-beige);">Category</label>
+                <select class="form-select" id="category-filter">
+                    <option value="all">All Categories</option>
+                    <option value="intake">Intake</option>
+                    <option value="exhaust">Exhaust</option>
+                    <option value="tuning">ECU Tuning</option>
+                    <option value="forced-induction">Forced Induction</option>
+                    <option value="fuel">Fuel System</option>
+                    <option value="engine">Internal Engine</option>
+                    <option value="brakes">Brakes</option>
+                    <option value="wheels">Wheels & Tires</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small fw-bold text-muted" style="color: var(--sand-beige);">Max Price</label>
+                <select class="form-select" id="price-filter">
+                    <option value="all">Any Price</option>
+                    <option value="500">Under $500</option>
+                    <option value="1000">Under $1,000</option>
+                    <option value="2000">Under $2,000</option>
+                    <option value="5000">Under $5,000</option>
+                </select>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Parts Grid -->
+    <section class="container py-4">
+        <div class="row mb-4">
+            <div class="col-12">
+                <span class="text-secondary-visible">Showing <strong id="parts-count" style="color: var(--performance-blue);">0</strong> performance parts</span>
+            </div>
+        </div>
+
+        <div class="row g-4" id="parts-grid">
+            <!-- Parts will be dynamically populated -->
+        </div>
+    </section>
+
+    <!-- Part Details Modal -->
+
+<!-- AI Assistant Modal -->
+    <div class="modal fade" id="aiAssistantModal" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+<div class="modal-content bg-white border">
+                <div class="modal-header border-0" style="background: linear-gradient(135deg, var(--performance-blue), var(--metallic-bronze));">
+                    <h5 class="modal-title" style="color: var(--light-cream);"><i class="fas fa-robot me-2"></i>AI Tuning Advisor</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <h6 class="fw-bold mb-3" style="color: var(--sand-beige);">Your Vehicle</h6>
+                            <div class="card border rounded-4 p-3 mb-4 bg-light">
+<div class="d-flex align-items-center">
+                                     <img id="modal-vehicle-image" src="https://via.placeholder.com/80/2D89BA/DAC6B6?text=BMW+M3" class="rounded me-3" alt="Vehicle">
+                                     <div>
+                                         <h6 id="modal-vehicle-name" class="mb-0" style="color: var(--sand-beige);">BMW M3</h6>
+                                         <small id="modal-vehicle-specs" class="text-muted">503 HP, I6 Twin-Turbo</small>
+                                         <br><span id="modal-vehicle-stage" class="badge rounded-pill" style="background: var(--performance-blue); color: var(--sand-beige);">Stage 1</span>
+                                     </div>
+                                 </div>
+                            </div>
+                            
+                            <h6 class="fw-bold mb-3" style="color: var(--sand-beige);">Configuration</h6>
+                            <div class="mb-3">
+                                <label class="form-label small" style="color: var(--sand-beige);">Build Goal</label>
+                                <select class="form-select" id="modal-goal">
+                                    <option value="daily">Daily Driver (Comfortable daily use)</option>
+                                    <option value="street">Street Performance (Aggressive street)</option>
+                                    <option value="track" selected>Track / Track Day (Maximum performance)</option>
+                                    <option value="drag">Drag Racing (Quarter mile focused)</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small" style="color: var(--sand-beige);">Budget Range</label>
+                                <select class="form-select" id="modal-budget">
+                                    <option value="2000">Budget: $2,000</option>
+                                    <option value="5000" selected>Standard: $5,000</option>
+                                    <option value="10000">High: $10,000</option>
+                                    <option value="20000">Ultimate: $20,000</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small" style="color: var(--sand-beige);">Driving Style</label>
+                                <select class="form-select" id="modal-style">
+                                    <option value="conservative">Conservative (Safe, reliable)</option>
+                                    <option value="balanced" selected>Balanced (Versatile)</option>
+                                    <option value="aggressive">Aggressive (Maximum performance)</option>
+                                </select>
+                            </div>
+                            
+                            <button class="btn btn-primary w-100 mt-2 rounded-pill" onclick="generateAIRecommendations()">
+                                <i class="fas fa-sync me-2"></i>Generate Plan
+                            </button>
+                        </div>
+                        
+                        <div class="col-md-7">
+                            <h6 class="fw-bold mb-3" style="color: var(--sand-beige);">AI Recommendation</h6>
+                            <div id="ai-results">
+                                <div class="text-center py-5">
+                                    <i class="fas fa-brain fa-3x mb-3" style="color: var(--performance-blue);"></i>
+                                    <p class="text-muted">Configure your goals and click "Generate Plan" to get AI-powered part recommendations.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0" style="background: rgba(12, 46, 61, 0.4);">
+                    <button type="button" class="btn rounded-pill px-4 btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn rounded-pill px-4 btn-primary" onclick="applyAIPlan()">
+                        <i class="fas fa-plus me-2"></i>Add All to Cart
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Part Details Modal -->
+    <div class="modal fade" id="partDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content bg-white border">
+                <div class="modal-header border-0" style="background: linear-gradient(135deg, var(--performance-blue), var(--metallic-bronze));">
+                    <h5 class="modal-title" style="color: var(--light-cream);"><i class="fas fa-cog me-2"></i>Part Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="part-details-content" style="background: linear-gradient(135deg, rgba(12, 46, 61, 0.4) 0%, rgba(24, 103, 132, 0.2) 100%);">
+                    <div class="text-center p-4"><div class="spinner-border" style="color: var(--performance-blue);"></div></div>
+                </div>
+                <div class="modal-footer border-0" style="background: rgba(12, 46, 61, 0.4);">
+                    <button type="button" class="btn rounded-pill px-4 btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn rounded-pill px-4 btn-success" id="install-part-btn">Install Part</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Build Summary Modal -->
+    <div class="modal fade" id="buildSummaryModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content bg-white border-0 shadow">
+                <div class="modal-header border-0" style="background: linear-gradient(135deg, var(--metallic-bronze), var(--performance-blue));">
+                    <h5 class="modal-title" style="color: var(--light-cream);"><i class="fas fa-chart-line me-2"></i>Build Summary</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" style="background: linear-gradient(135deg, rgba(12, 46, 61, 0.4) 0%, rgba(24, 103, 132, 0.2) 100%);">
+                    <div class="row mb-4">
+                        <div class="col-6">
+                            <h6 class="fw-bold mb-3" style="color: var(--sand-beige);">Initial State</h6>
+                            <div class="card bg-light border rounded-4 p-3">
+                                <div class="row g-2">
+                                    <div class="col-6"><strong style="color: var(--sand-beige);">Power:</strong> <span id="initial-power" style="color: var(--light-cream);">503 HP</span></div>
+                                    <div class="col-6"><strong style="color: var(--sand-beige);">Torque:</strong> <span id="initial-torque" style="color: var(--light-cream);">550 Nm</span></div>
+                                    <div class="col-6"><strong style="color: var(--sand-beige);">AFR:</strong> <span id="initial-afr" style="color: var(--light-cream);">14.7:1</span></div>
+                                    <div class="col-6"><strong style="color: var(--sand-beige);">Boost:</strong> <span id="initial-boost" style="color: var(--light-cream);">10 psi</span></div>
+                                    <div class="col-6"><strong style="color: var(--sand-beige);">Timing:</strong> <span id="initial-timing" style="color: var(--light-cream);">15°</span></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <h6 class="fw-bold mb-3" style="color: var(--sand-beige);">Final Stage</h6>
+                            <div class="card bg-gradient-light border-0 rounded-4 p-3">
+                                <div class="row g-2">
+                                    <div class="col-6"><strong style="color: var(--sand-beige);">Power:</strong> <span id="final-power" class="text-success">+0 HP</span></div>
+                                    <div class="col-6"><strong style="color: var(--sand-beige);">Torque:</strong> <span id="final-torque" class="text-warning">+0 Nm</span></div>
+                                    <div class="col-6"><strong style="color: var(--sand-beige);">AFR:</strong> <span id="final-afr" class="text-info">14.7:1</span></div>
+                                    <div class="col-6"><strong style="color: var(--sand-beige);">Boost:</strong> <span id="final-boost" style="color: var(--performance-blue);">12 psi</span></div>
+                                    <div class="col-6"><strong style="color: var(--sand-beige);">Timing:</strong> <span id="final-timing" style="color: var(--metallic-bronze);">24°</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-6">
+                            <h6 class="fw-bold mb-3" style="color: var(--sand-beige);">Total Cost</h6>
+                            <div class="card bg-light border rounded-4 p-3">
+                                <h3 class="text-primary mb-0">$<span id="total-cost" style="color: var(--performance-blue);">0</span></h3>
+                                <small class="text-muted" style="color: var(--sand-beige);">Parts investment</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <h6 class="fw-bold mb-3" style="color: var(--sand-beige);">Time Consumption</h6>
+                            <div class="card bg-light border rounded-4 p-3">
+                                <h3 class="text-warning mb-0"><span id="total-time">0</span> hours</h3>
+                                <small class="text-muted" style="color: var(--sand-beige);">Installation time</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h6 class="fw-bold mb-3" style="color: var(--sand-beige);">Installed Parts (<span id="installed-count">0</span>)</h6>
+                    <div id="installed-parts-list" class="list-group list-group-flush bg-transparent">
+                        <p class="text-muted" style="color: var(--sand-beige);">No parts installed yet. Add parts to see your build progress.</p>
+                    </div>
+                </div>
+                <div class="modal-footer border-0" style="background: rgba(12, 46, 61, 0.4);">
+                    <button type="button" class="btn rounded-pill px-4 btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Apply Build Modal -->
+    <div class="modal fade" id="applyBuildModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content bg-white border-0 shadow">
+                <div class="modal-header border-0" style="background: linear-gradient(135deg, var(--performance-blue), var(--metallic-bronze));">
+                    <h5 class="modal-title" style="color: var(--light-cream);"><i class="fas fa-wrench me-2"></i>Apply Build</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" style="background: linear-gradient(135deg, rgba(12, 46, 61, 0.4) 0%, rgba(24, 103, 132, 0.2) 100%);">
+                    <ul class="nav nav-tabs mb-4" role="tablist" style="border-bottom: 1px solid rgba(154, 124, 101, 0.3);">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#overview-tab" type="button" style="color: var(--performance-blue); border-color: transparent;">Overview</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#changes-tab" type="button" style="color: var(--metallic-bronze); border-color: transparent;">Changes</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#performance-tab" type="button" style="color: var(--performance-blue); border-color: transparent;">Performance</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#final-tab" type="button" style="color: var(--metallic-bronze); border-color: transparent;">Final Specs</button>
+                        </li>
+                    </ul>
+                    
+                    <div class="tab-content">
+                        <!-- Overview Tab -->
+                        <div class="tab-pane fade show active" id="overview-tab">
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <div class="card bg-light border rounded-4 p-3">
+                                        <h6 class="fw-bold mb-3" style="color: var(--sand-beige);"><i class="fas fa-shopping-cart me-2"></i>Total Price</h6>
+                                        <h2 style="color: var(--performance-blue);">$<span id="apply-total-cost">0</span></h2>
+                                        <small style="color: var(--sand-beige);">Parts added to cart</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card bg-light border rounded-4 p-3">
+                                        <h6 class="fw-bold mb-3" style="color: var(--sand-beige);"><i class="fas fa-stopwatch me-2"></i>Time Consumption</h6>
+                                        <h2 class="text-warning mb-0"><span id="apply-total-time">0</span> hours</h2>
+                                        <small style="color: var(--sand-beige);">Installation time</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card bg-white border rounded-4 p-4 mt-4">
+                                <h6 class="fw-bold mb-3" style="color: var(--sand-beige);">Parts to Apply (<span id="apply-parts-count">0</span>)</h6>
+                                <div id="apply-parts-list" style="max-height: 200px; overflow-y: auto;">
+                                    <p style="color: var(--sand-beige);">No parts selected. Add parts to your build.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Changes Tab -->
+                        <div class="tab-pane fade" id="changes-tab">
+                            <div class="card bg-white border rounded-4 p-4 mb-4">
+                                <h6 class="fw-bold mb-3" style="color: var(--sand-beige);"><i class="fas fa-info-circle me-2"></i>Initial Specs</h6>
+                                <div class="row g-2">
+                                    <div class="col-6"><strong style="color: var(--sand-beige);">HP:</strong> <span id="apply-initial-hp" style="color: var(--light-cream);">503</span></div>
+                                    <div class="col-6"><strong style="color: var(--sand-beige);">Torque:</strong> <span id="apply-initial-torque" style="color: var(--light-cream);">550</span> Nm</div>
+                                    <div class="col-6"><strong style="color: var(--sand-beige);">Boost:</strong> <span id="apply-initial-boost" style="color: var(--light-cream);">10</span> psi</div>
+                                    <div class="col-6"><strong style="color: var(--sand-beige);">Timing:</strong> <span id="apply-initial-timing" style="color: var(--light-cream);">15°</span></div>
+                                    <div class="col-6"><strong style="color: var(--sand-beige);">AFR:</strong> <span id="apply-initial-afr" style="color: var(--light-cream);">14.7</span>:1</div>
+                                </div>
+                            </div>
+                            
+                            <div class="card bg-success bg-opacity-10 border-success border rounded-4 p-4">
+                                <h6 class="fw-bold text-success mb-3" style="color: var(--performance-blue);"><i class="fas fa-arrow-up me-2"></i>Changes After Applying</h6>
+                                <div class="row g-2">
+                                    <div class="col-6"><strong style="color: var(--sand-beige);">Power Gain:</strong> <span id="apply-power-gain" class="text-success">+0</span> HP</div>
+                                    <div class="col-6"><strong style="color: var(--sand-beige);">Torque Gain:</strong> <span id="apply-torque-gain" style="color: var(--metallic-bronze);">+0</span> Nm</div>
+                                    <div class="col-6"><strong style="color: var(--sand-beige);">Boost Change:</strong> <span id="apply-boost-change" style="color: var(--performance-blue);">+0</span> psi</div>
+                                    <div class="col-6"><strong style="color: var(--sand-beige);">Timing Change:</strong> <span id="apply-timing-change" style="color: #8B5CF6;">+0°</span></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Performance Analysis Tab -->
+                        <div class="tab-pane fade" id="performance-tab">
+                            <div class="card bg-white border rounded-4 p-4 mb-4">
+                                <h6 class="fw-bold mb-3" style="color: var(--sand-beige);"><i class="fas fa-chart-bar me-2" style="color: var(--performance-blue);"></i>Performance Impact</h6>
+                                <canvas id="performanceChart" style="height: 200px;"></canvas>
+                            </div>
+                            
+                            <div class="card bg-white border rounded-4 p-4">
+                                <h6 class="fw-bold mb-3" style="color: var(--sand-beige);"><i class="fas fa-table me-2" style="color: var(--metallic-bronze);"></i>Dyno Curve Comparison</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm" style="color: var(--light-cream);">
+                                        <thead>
+                                            <tr>
+                                                <th>RPM</th>
+                                                <th>HP (Before)</th>
+                                                <th>HP (After)</th>
+                                                <th>Torque (Before)</th>
+                                                <th>Torque (After)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="dyno-comparison-table">
+                                            <tr><td colspan="5" class="text-center">No data available</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Final Specs Tab -->
+                        <div class="tab-pane fade" id="final-tab">
+                            <div class="card bg-white border rounded-4 p-4">
+                                <h6 class="fw-bold mb-3" style="color: var(--sand-beige);"><i class="fas fa-flag-checkered me-2" style="color: var(--performance-blue);"></i>Final Stage Specs</h6>
+                                <div class="row g-2">
+                                    <div class="col-6"><strong style="color: var(--sand-beige);">HP + Torque:</strong> <span id="apply-final-hp" style="color: var(--light-cream);">503</span> HP / <span id="apply-final-torque" style="color: var(--light-cream);">550</span> Nm</div>
+                                    <div class="col-6"><strong style="color: var(--sand-beige);">Boost:</strong> <span id="apply-final-boost" style="color: var(--light-cream);">10</span> psi</div>
+                                    <div class="col-6"><strong style="color: var(--sand-beige);">Timing:</strong> <span id="apply-final-timing" style="color: var(--light-cream);">15°</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0" style="background: rgba(12, 46, 61, 0.4);">
+                    <button type="button" class="btn rounded-pill px-4 btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn rounded-pill px-4 btn-success" onclick="applyBuild()">
+                        <i class="fas fa-check me-2"></i>Confirm Apply Build
+                    </button>
+                </div>
+            </div>
+</div>
+     </div>
+
+     <div class="ai-agent-wrapper">
+         <input type="checkbox" id="agent-check">
+         <div class="chat-popup shadow-lg">
+             <div class="p-3 fw-bold d-flex align-items-center" style="background: linear-gradient(135deg, var(--performance-blue) 0%, var(--metallic-bronze) 100%); color: var(--light-cream);">
+                 <i class="fas fa-robot me-2"></i> Dyno AI Assistant
+                 <button class="btn btn-sm ms-auto" id="chat-close" style="color: var(--light-cream);"><i class="fas fa-times"></i></button>
+             </div>
+             <div class="p-4 small scrollable-chat" id="chat-messages">
+                 <div class="chat-message bot" style="background: rgba(24, 103, 132, 0.1); color: var(--light-cream); border: 1px solid rgba(24, 103, 132, 0.2);">
+                     Hello! I'm your AI tuning assistant. Ask me about parts, performance gains, or installation recommendations!
+                 </div>
+             </div>
+             <div class="p-2 border-top" style="background: rgba(12, 46, 61, 0.2);">
+                 <div class="input-group">
+                     <input type="text" class="form-control border-0" id="chat-input" placeholder="Ask about parts..." style="background: rgba(255,255,255,0.1); color: var(--light-cream);">
+                     <button class="btn" id="chat-send" style="background: var(--performance-blue); color: var(--light-cream);"><i class="fas fa-paper-plane"></i></button>
+                 </div>
+             </div>
+         </div>
+         <label for="agent-check" class="agent-bubble shadow">
+             <i class="fas fa-robot"></i>
+         </label>
+     </div>
+
+     <footer class="py-5 text-center border-top mt-5" style="border-color: rgba(154, 124, 101, 0.3); background: rgba(12, 46, 61, 0.5);">
+         <small style="color: var(--sand-beige);">&copy; 2026 RevDynamics. Smart Parts Catalog with AI Recommendations.</small>
+     </footer>
+
+<script src="/js/vehicle-manager.js"></script>
+<script src="/js/api-client.js"></script>
+<script>
+function calculateStage(installedParts) {
+    if (!installedParts || installedParts.length === 0) return 1;
+    const maxStage = Math.max(...installedParts.map(p => p.stages?.[0] || 1));
+    return Math.max(1, Math.min(3, maxStage));
+}
+
+window.PARTS_DB = [
+    {id: 'cold-air-intake', name: 'Cold Air Intake System', category: 'intake', powerGain: 12, torqueGain: 18, boostGain: 0, timingGain: 0, cost: 499, difficulty: 1, stages: [1], description: 'High-flow conical air filter with smooth intake piping.', compatible: ['all']},
+    {id: 'short-ram-intake', name: 'Short Ram Intake', category: 'intake', powerGain: 8, torqueGain: 12, boostGain: 0, timingGain: 0, cost: 299, difficulty: 1, stages: [1], description: 'Compact intake for tight engine bays.', compatible: ['all']},
+    {id: 'high-flow-filter', name: 'High-Flow Air Filter', category: 'intake', powerGain: 5, torqueGain: 8, boostGain: 0, timingGain: 0, cost: 129, difficulty: 1, stages: [1], description: 'Reusable cotton gauze filter replacement.', compatible: ['all']},
+    {id: 'cat-back-exhaust', name: 'Cat-Back Exhaust System', category: 'exhaust', powerGain: 18, torqueGain: 15, boostGain: 0, timingGain: 2, cost: 1299, difficulty: 2, stages: [1], description: 'Stainless steel performance exhaust with polished tips.', compatible: ['all']},
+    {id: 'turbo-back-exhaust', name: 'Turbo-Back Exhaust', category: 'exhaust', powerGain: 35, torqueGain: 25, boostGain: 2, timingGain: 3, cost: 2499, difficulty: 3, stages: [2, 3], description: 'Full race exhaust including downpipe.', compatible: ['turbo']},
+    {id: 'axle-back-exhaust', name: 'Axle-Back Exhaust', category: 'exhaust', powerGain: 12, torqueGain: 10, boostGain: 0, timingGain: 1, cost: 899, difficulty: 2, stages: [1], description: 'Designed for optimal flow and sound.', compatible: ['all']},
+    {id: 'ecu-remap', name: 'ECU Performance Remap', category: 'tuning', powerGain: 45, torqueGain: 60, boostGain: 3, timingGain: 8, cost: 799, difficulty: 1, stages: [1], description: 'Custom ECU tune for increased boost and timing.', compatible: ['turbo']},
+    {id: 'stand-alone-ecu', name: 'Standalone ECU System', category: 'tuning', powerGain: 120, torqueGain: 150, boostGain: 5, timingGain: 12, cost: 3499, difficulty: 5, stages: [3], description: 'Complete engine management replacement.', compatible: ['all']},
+    {id: 'turbo-upgrade', name: 'Turbocharger Upgrade', category: 'forced-induction', powerGain: 80, torqueGain: 100, boostGain: 8, timingGain: 5, cost: 2999, difficulty: 4, stages: [2, 3], description: 'Larger ball-bearing turbo with increased flow.', compatible: ['turbo']},
+    {id: 'supercharger-kit', name: 'Supercharger Kit', category: 'forced-induction', powerGain: 75, torqueGain: 85, boostGain: 0, timingGain: 10, cost: 2799, difficulty: 4, stages: [2, 3], description: 'Positive displacement supercharger system.', compatible: ['na']},
+    {id: 'intercooler', name: 'Front Mount Intercooler', category: 'forced-induction', powerGain: 25, torqueGain: 30, boostGain: 0, timingGain: 0, cost: 1199, difficulty: 3, stages: [2], description: 'Aluminum intercooler for reduced intake temps.', compatible: ['turbo']},
+    {id: 'wastegate-upgrade', name: 'External Wastegate', category: 'forced-induction', powerGain: 15, torqueGain: 20, boostGain: 4, timingGain: 0, cost: 499, difficulty: 2, stages: [2], description: 'Upgraded wastegate for precise boost control.', compatible: ['turbo']},
+    {id: 'fuel-injectors', name: 'High-Flow Fuel Injectors', category: 'fuel', powerGain: 0, torqueGain: 0, boostGain: 0, timingGain: 0, cost: 699, difficulty: 3, stages: [2, 3], description: '1000cc injectors for supporting modifications.', compatible: ['all']},
+    {id: 'fuel-pump', name: 'High-Pressure Fuel Pump', category: 'fuel', powerGain: 0, torqueGain: 0, boostGain: 0, timingGain: 0, cost: 1299, difficulty: 4, stages: [3], description: 'Upgraded pump for high-horsepower builds.', compatible: ['all']},
+    {id: 'forged-pistons', name: 'Forged Pistons', category: 'engine', powerGain: 0, torqueGain: 0, boostGain: 0, timingGain: 5, cost: 1899, difficulty: 5, stages: [3], description: 'High-strength pistons for boosted applications.', compatible: ['turbo']},
+    {id: 'connecting-rods', name: 'Connecting Rods', category: 'engine', powerGain: 0, torqueGain: 0, boostGain: 0, timingGain: 0, cost: 1499, difficulty: 5, stages: [3], description: 'H-beam rods for increased strength.', compatible: ['all']},
+    {id: 'valve-springs', name: 'Upgrade Valve Springs', category: 'engine', powerGain: 0, torqueGain: 0, boostGain: 0, timingGain: 8, cost: 599, difficulty: 4, stages: [2, 3], description: 'High-rev valve springs for 8000+ RPM.', compatible: ['all']},
+    {id: 'brake-kit-front', name: 'Front Big Brake Kit', category: 'brakes', powerGain: 0, torqueGain: 0, boostGain: 0, timingGain: 0, cost: 2499, difficulty: 3, stages: [2, 3], description: '6-piston calipers with 380mm rotors.', compatible: ['all']},
+    {id: 'brake-kit-rear', name: 'Rear Brake Kit', category: 'brakes', powerGain: 0, torqueGain: 0, boostGain: 0, timingGain: 0, cost: 1299, difficulty: 2, stages: [1, 2], description: '4-pot calipers with slotted rotors.', compatible: ['all']},
+    {id: 'wheels-18x9', name: '18x9 Lightweight Wheels', category: 'wheels', powerGain: 10, torqueGain: 0, boostGain: 0, timingGain: 0, cost: 1999, difficulty: 2, stages: [1], description: 'Forged wheels for reduced unsprung weight.', compatible: ['all']},
+    {id: 'racing-slicks', name: 'Racing Slicks', category: 'wheels', powerGain: 15, torqueGain: 0, boostGain: 0, timingGain: 0, cost: 899, difficulty: 1, stages: [2], description: 'Track-focused tire compound.', compatible: ['all']}
+];
+
+function updateVehicleDisplay() {
+    const vehicle = window.vehicleManager?.getVehicle() || { make: 'BMW', model: 'M3', basePower: 503, torque: 550, year: 2024 };
+    const installed = partsCatalog.installedParts.map(id => partsCatalog.currentParts?.find(p => p.id === id)).filter(Boolean);
+    const stage = calculateStage(installed);
+    
+    let totalPower = 0, totalTorque = 0;
+    installed.forEach(part => {
+        totalPower += part.powerGain || 0;
+        totalTorque += part.torqueGain || 0;
+    });
+
+    const vehicleNameEl = document.getElementById('current-vehicle-name');
+    if (vehicleNameEl) {
+        vehicleNameEl.textContent = vehicle.make + ' ' + vehicle.model + ' (' + (vehicle.year || 2024) + ')';
+    }
+    const vehicleSpecsEl = document.getElementById('vehicle-specs');
+    if (vehicleSpecsEl) {
+        const stagePotential = totalPower > 100 ? 'Stage 3 Ready' : totalPower > 50 ? 'Stage 2 Ready' : totalPower > 0 ? 'Stage 1 Ready' : 'Stock';
+        const partsCount = installed.length;
+        vehicleSpecsEl.innerHTML = (vehicle.basePower + totalPower) + ' HP, ' + (vehicle.torque + totalTorque) + ' Nm • ' + stagePotential + ' • <span id="parts-count-badge">' + partsCount + ' Part' + (partsCount !== 1 ? 's' : '') + ' Installed</span>';
+    }
+    const vehicleCompatEl = document.getElementById('vehicle-compatibility');
+    if (vehicleCompatEl) {
+        const isTurbo = vehicle.turbo === true || vehicle.compatibility === 'turbo' || (vehicle.engineType || '').toLowerCase().includes('turbo') || (vehicle.engine || '').toLowerCase().includes('turbo');
+        const compatText = isTurbo ? 'Turbo Compatible' : 'NA Compatible';
+        const drivetrain = vehicle.Drivetrain || vehicle.drivetrain || 'RWD';
+        const redline = vehicle.redline || 7200;
+        vehicleCompatEl.innerHTML = '<i class="fas fa-check-circle me-1" style="color: var(--performance-blue);"></i>' + compatText + ' • ' + drivetrain + ' • Redline: ' + redline.toLocaleString() + ' RPM';
+    }
+    const modalNameEl = document.getElementById('modal-vehicle-name');
+    if (modalNameEl) {
+        modalNameEl.textContent = vehicle.make + ' ' + vehicle.model;
+    }
+    const modalSpecsEl = document.getElementById('modal-vehicle-specs');
+    if (modalSpecsEl) {
+        const isTurbo = vehicle.turbo === true || vehicle.compatibility === 'turbo' || (vehicle.engineType || '').toLowerCase().includes('turbo') || (vehicle.engine || '').toLowerCase().includes('turbo');
+        const drivetrain = vehicle.Drivetrain || vehicle.drivetrain || 'RWD';
+        const redline = vehicle.redline || 7200;
+        modalSpecsEl.innerHTML = '<i class="fas fa-bolt me-1"></i>' + (vehicle.basePower + totalPower) + ' HP / ' + (vehicle.torque + totalTorque) + ' Nm<br><small>' + (isTurbo ? 'Turbo' : 'Natural Aspiration') + ' • ' + drivetrain + ' • ' + redline.toLocaleString() + ' RPM Redline</small>';
+    }
+    const modalStageEl = document.getElementById('modal-vehicle-stage');
+    if (modalStageEl) {
+        const stageInfo = ['Ready', 'Available', 'Required'][Math.max(0, stage - 1)] || 'Ready';
+        modalStageEl.textContent = 'Stage ' + stage + ' ' + stageInfo;
+    }
+    const vehicleStageEl = document.getElementById('vehicle-stage');
+    if (vehicleStageEl) {
+        const stageInfo = ['Ready', 'Available', 'Required'][Math.max(0, stage - 1)] || 'Ready';
+        vehicleStageEl.textContent = 'Stage ' + stage + ' ' + stageInfo;
+    }
+    const modalImageEl = document.getElementById('modal-vehicle-image');
+    if (modalImageEl) {
+        const text = encodeURIComponent(vehicle.make + '+' + vehicle.model);
+        modalImageEl.src = 'https://via.placeholder.com/80/2D89BA/DAC6B6?text=' + text;
+    }
+}
+
+function showToast(message, type = 'info') {
+    const toastContainer = document.getElementById('toast-container') || createToastContainer();
+    const toastEl = document.createElement('div');
+    const colors = {
+        success: 'linear-gradient(135deg, var(--performance-blue), var(--metallic-bronze))',
+        error: 'rgba(220, 38, 38, 0.9)',
+        info: 'rgba(24, 103, 132, 0.9)',
+        warning: 'rgba(154, 124, 101, 0.9)'
+    };
+    toastEl.className = 'toast align-items-center text-white border-0 mb-2';
+    toastEl.setAttribute('role', 'alert');
+    toastEl.style.background = colors[type] || colors.info;
+    toastEl.innerHTML = '<div class="d-flex"><div class="toast-body">' + message + '</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div>';
+    toastContainer.appendChild(toastEl);
+    const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+    toast.show();
+    setTimeout(() => toastEl.remove(), 3500);
+}
+
+function createToastContainer() {
+    const container = document.createElement('div');
+    container.id = 'toast-container';
+    container.className = 'position-fixed bottom-0 end-0 p-3';
+    container.style.zIndex = '1080';
+    document.body.appendChild(container);
+    return container;
+}
+
+const partsCatalog = {
+    currentVehicle: localStorage.getItem('selectedVehicle') || 'bmw-m3',
+    installedParts: [],
+    currentParts: [],
+
+    async init() {
+        const savedVehicle = localStorage.getItem('selectedVehicle');
+        const urlParams = new URLSearchParams(window.location.search);
+        const vehicleParam = urlParams.get("vehicle") || savedVehicle;
+        this.currentVehicle = vehicleParam;
+        window.currentVehicle = vehicleParam;
+        // Get parts specific to this vehicle
+        this.installedParts = window.vehicleManager?.getInstalledPartsForVehicle(vehicleParam) || [];
+        if (window.vehicleManager) {
+            window.vehicleManager.currentVehicle = vehicleParam;
+        }
+        this.loadParts();
+        updateNavButtons();
+        updateVehicleDisplay();
+    },
+
+    loadParts() {
+        this.currentParts = window.PARTS_DB || [];
+        this.renderParts();
+    },
+
+    getIconForCategory(category) {
+        const icons = {
+            intake: 'wind',
+            exhaust: 'bolt',
+            tuning: 'tachometer-alt',
+            'forced-induction': 'fan',
+            fuel: 'gas-pump',
+            engine: 'cog',
+            brakes: 'disc-drive',
+            wheels: 'circle'
+        };
+        return icons[category] || 'tools';
+    },
+    
+    getInitialStats() {
+        const vehicle = window.vehicleManager?.getVehicle() || { basePower: 503, torque: 550 };
+        return { hp: vehicle.basePower || 503, torque: vehicle.torque || 550, boost: 10, timing: 15, afr: 12.5 };
+    },
+
+    renderParts(parts = this.currentParts) {
+        const container = document.getElementById('parts-grid');
+        if (!container) return;
+
+        document.getElementById('parts-count').textContent = parts.length;
+
+        container.innerHTML = parts.map(part => {
+            const icon = this.getIconForCategory(part.category);
+            const isInstalled = this.installedParts.includes(part.id);
+            return '<div class="col-lg-4 col-md-6 mb-4">' +
+                '<div class="card h-100 part-card">' +
+                    '<div class="card-body">' +
+                        '<div class="d-flex justify-content-between align-items-start mb-3">' +
+                            '<div>' +
+                                '<h5 class="card-title">' + part.name + '</h5>' +
+                                '<small class="text-muted">' + part.category + '</small>' +
+                            '</div>' +
+                            '<i class="fas fa-' + icon + ' fa-2x" style="opacity: 0.9;"></i>' +
+                        '</div>' +
+                        '<p class="card-text small">' + part.description + '</p>' +
+                        '<div class="row g-2 mb-3">' +
+                            '<div class="col-6"><span class="text-success">+' + part.powerGain + ' HP</span></div>' +
+                            '<div class="col-6"><span class="text-warning">+' + part.torqueGain + ' Nm</span></div>' +
+                            '<div class="col-6"><span style="color: var(--performance-blue);">+' + (part.boostGain || 0) + ' psi</span></div>' +
+                            '<div class="col-6"><span style="color: #8B5CF6;">+' + (part.timingGain || 0) + '°</span></div>' +
+                        '</div>' +
+                        '<div class="d-flex justify-content-between align-items-center mb-2">' +
+                            '<span class="fw-bold">$' + part.cost.toLocaleString() + '</span>' +
+                            '<span class="badge bg-' + (isInstalled ? 'success' : 'primary') + '">Stage ' + (part.stages?.[0] || 1) + '</span>' +
+                        '</div>' +
+                        '<div class="text-center mb-2"><small class="text-muted"><i class="fas fa-clock me-1"></i>Install time: ' + part.difficulty + ' hour' + (part.difficulty > 1 ? 's' : '') + '</small></div>' +
+                        '<div class="mt-3">' +
+                            '<button class="btn btn-sm rounded-pill w-100" onclick="installPart(\'' + part.id + '\')" ' + (isInstalled ? 'disabled style="opacity: 0.5;"' : 'style="background: linear-gradient(135deg, var(--performance-blue), var(--metallic-bronze)); color: var(--sand-beige);"') + '>' +
+                                (isInstalled ? '<i class="fas fa-check me-1"></i>Added' : '<i class="fas fa-plus me-1"></i>Add to Build') +
+                            '</button>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>';
+        }).join('');
+    },
+    
+    filterParts() {
+        const stageFilter = document.getElementById('stage-filter').value;
+        const goalFilter = document.getElementById('goal-filter').value;
+        const categoryFilter = document.getElementById('category-filter').value;
+        const priceFilter = document.getElementById('price-filter').value;
+
+        // Map goal to minimum stage (daily→1, street→2, track/drag→3)
+        let goalStage = null;
+        if (goalFilter === 'daily') goalStage = 1;
+        else if (goalFilter === 'street') goalStage = 2;
+        else if (goalFilter === 'track' || goalFilter === 'drag') goalStage = 3;
+
+        const filtered = (window.PARTS_DB || []).filter(part => {
+            // Stage filter: part must include the specific stage if set
+            if (stageFilter !== 'all' && !part.stages?.includes(parseInt(stageFilter))) {
+                return false;
+            }
+            // Goal filter: part must include at least the goal stage if set
+            if (goalStage !== null && !part.stages?.some(s => s >= goalStage)) {
+                return false;
+            }
+            if (categoryFilter !== 'all' && part.category !== categoryFilter) {
+                return false;
+            }
+            if (priceFilter !== 'all' && part.cost >= parseInt(priceFilter)) {
+                return false;
+            }
+            return true;
+        });
+
+        this.renderParts(filtered);
+    }
+};
+
+function installPart(partId) {
+    const part = partsCatalog.currentParts?.find(p => p.id === partId);
+    if (!part) return;
+    
+    if (!partsCatalog.installedParts.includes(partId)) {
+        partsCatalog.installedParts.push(partId);
+    }
+    
+    // Save to per-vehicle storage with correct vehicle ID
+    if (window.vehicleManager) {
+        window.vehicleManager.setInstalledParts(partsCatalog.installedParts, partsCatalog.currentVehicle);
+    }
+    
+    // Save full part objects to localStorage for build summary
+    const installedParts = partsCatalog.installedParts.map(id => partsCatalog.currentParts.find(p => p.id === id)).filter(Boolean);
+    localStorage.setItem('installedPartsData', JSON.stringify(installedParts));
+    localStorage.setItem('currentVehicle', partsCatalog.currentVehicle);
+    
+    if (window.apiClient) {
+        window.apiClient.saveVehicleBuild({
+            vehicleId: partsCatalog.currentVehicle,
+            installedParts: installedParts
+        });
+    }
+    
+    partsCatalog.loadParts();
+    partsCatalog.filterParts();
+    updateVehicleDisplay();
+    showToast('Installed: ' + part.name, 'success');
+}
+
+function showPartDetails(partId) {
+    const part = partsCatalog.currentParts?.find(p => p.id === partId);
+    const content = document.getElementById('part-details-content');
+    const installBtn = document.getElementById('install-part-btn');
+    if (!part || !content) return;
+
+    const icon = partsCatalog.getIconForCategory(part.category);
+    content.innerHTML = '<div class="row">' +
+        '<div class="col-md-4">' +
+            '<div class="part-image-large" style="height: 150px; background: linear-gradient(135deg, #E0F2FE, #F8FAFC); border-radius: 8px; display: flex; align-items: center; justify-content: center;">' +
+                '<i class="fas fa-' + icon + ' fa-4x" style="opacity: 0.9; color: var(--light-cream);"></i>' +
+            '</div>' +
+        '</div>' +
+        '<div class="col-md-8">' +
+            '<h5 style="color: var(--light-cream);">' + part.name + '</h5>' +
+            '<p class="text-muted">' + part.description + '</p>' +
+            '<div class="row g-2 mb-3">' +
+                '<div class="col-6"><strong style="color: var(--sand-beige);">Category:</strong> <span style="color: var(--light-cream);">' + part.category + '</span></div>' +
+                '<div class="col-6"><strong style="color: var(--sand-beige);">Stage:</strong> <span style="color: var(--light-cream);">' + (part.stages?.[0] || 1) + '</span></div>' +
+                '<div class="col-6"><strong style="color: var(--sand-beige);">Install Time:</strong> <span style="color: var(--light-cream);">' + part.difficulty + ' hours</span></div>' +
+                '<div class="col-6"><strong style="color: var(--sand-beige);">Price:</strong> <span style="color: var(--light-cream);">$' + part.cost + '</span></div>' +
+            '</div>' +
+            '<h6 style="color: var(--metallic-bronze);"><i class="fas fa-tachometer-alt me-2"></i>Performance Effects</h6>' +
+            '<div class="row g-2">' +
+                '<div class="col-6"><span class="text-success">+' + part.powerGain + ' HP</span> <small class="text-muted">(Power)</small></div>' +
+                '<div class="col-6"><span class="text-warning">+' + part.torqueGain + ' Nm</span> <small class="text-muted">(Torque)</small></div>' +
+                '<div class="col-6"><span style="color: var(--performance-blue);">+' + (part.boostGain || 0) + ' psi</span> <small class="text-muted">(Boost)</small></div>' +
+                '<div class="col-6"><span style="color: #8B5CF6;">+' + (part.timingGain || 0) + '°</span> <small class="text-muted">(Timing)</small></div>' +
+            '</div>' +
+        '</div>' +
+    '</div>';
+
+    if (installBtn) {
+        installBtn.onclick = function() {
+            installPart(partId);
+            bootstrap.Modal.getInstance(document.getElementById('partDetailsModal')).hide();
+        };
+        installBtn.style.display = partsCatalog.installedParts.includes(partId) ? 'none' : 'block';
+    }
+
+    const modal = new bootstrap.Modal(document.getElementById('partDetailsModal'));
+    modal.show();
+}
+
+function generateAIRecommendations() {
+    const goal = document.getElementById('modal-goal').value;
+    const budget = parseInt(document.getElementById('modal-budget').value);
+    
+    document.getElementById('ai-results').innerHTML = '<div class="text-center p-4"><div class="spinner-border text-primary"></div></div>';
+    
+    window.apiClient.getRecommendations({
+        vehicleId: partsCatalog.currentVehicle,
+        goal,
+        maxBudget: budget
+    }).then(analysis => {
+        displayAIResults(analysis);
+    }).catch(() => {
+        document.getElementById('ai-results').innerHTML = '<p class="text-muted">Unable to get recommendations. Please try again.</p>';
+    });
+}
+
+function displayAIResults(analysis) {
+    const resultsDiv = document.getElementById('ai-results');
+    const html = `
+        <div class="card bg-white border rounded-4 p-4 mb-3">
+            <h6 class="fw-bold text-primary mb-3">Recommended Build Summary</h6>
+            <div class="row text-center">
+                <div class="col-4"><h4 class="text-success">+${analysis.totalPowerGain || 0} HP</h4><small class="text-muted">Power Gain</small></div>
+                <div class="col-4"><h4 class="text-warning">0-60: ${analysis.estimated0_60 || 'N/A'}s</h4><small class="text-muted">Estimated</small></div>
+                <div class="col-4"><h4 class="text-primary">$${analysis.totalCost?.toLocaleString() || 0}</h4><small class="text-muted">Total Cost</small></div>
+            </div>
+        </div>
+        <h6 class="fw-bold mb-3">Part Recommendations (${analysis.parts?.length || 0})</h6>
+        <div class="list-group list-group-flush bg-transparent">
+            ${(analysis.parts || []).map((part, idx) => `
+                <div class="list-group-item bg-transparent border-0 border-start ps-0 mb-2">
+                    <div class="d-flex justify-content-between">
+                        <div><span class="badge ${part.priority === 'high' ? 'bg-danger' : 'bg-warning'} me-2">${(part.priority || 'medium').toUpperCase()}</span>
+                        <strong>${idx + 1}. ${part.name}</strong></div>
+                        <div class="text-end"><div class="fw-bold">+${part.powerGain} HP</div><div class="small text-muted">$${part.cost}</div></div>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+        <div class="alert alert-light border-primary mt-3">
+            <i class="fas fa-lightbulb text-primary me-2"></i>
+            <small class="text-dark"><strong>AI Insight:</strong> ${analysis.notes?.[0] || 'Optimized for your vehicle.'}</small>
+        </div>
+    `;
+    resultsDiv.innerHTML = html;
+}
+
+function applyAIPlan() {
+    window.apiClient.getRecommendations({
+        vehicleId: partsCatalog.currentVehicle,
+        goal: document.getElementById('modal-goal').value,
+        maxBudget: parseInt(document.getElementById('modal-budget').value)
+    }).then(analysis => {
+        analysis.parts?.forEach(part => {
+            if (!partsCatalog.installedParts.includes(part.id)) {
+                partsCatalog.installedParts.push(part.id);
+            }
+        });
+        
+        // Map all installed part IDs to full part objects
+        const installedParts = partsCatalog.installedParts.map(id => 
+            partsCatalog.currentParts.find(p => p.id === id) || 
+            analysis.parts?.find(p => p.id === id)
+        ).filter(Boolean);
+        
+        // Save to per-vehicle storage
+        if (window.vehicleManager) {
+            window.vehicleManager.setInstalledParts(partsCatalog.installedParts, partsCatalog.currentVehicle);
+        }
+        
+        // Save full part objects to localStorage for build summary
+        localStorage.setItem('installedPartsData', JSON.stringify(installedParts));
+        localStorage.setItem('currentVehicle', partsCatalog.currentVehicle);
+        
+        partsCatalog.loadParts();
+        partsCatalog.filterParts();
+        updateVehicleDisplay();
+        bootstrap.Modal.getInstance(document.getElementById('aiAssistantModal'))?.hide();
+        showToast(`Added ${analysis.parts?.length || 0} parts to your build!`, 'success');
+    });
+}
+
+function prepareBuildSummary() {
+    const installed = partsCatalog.installedParts.map(id =>
+        partsCatalog.currentParts?.find(p => p.id === id)
+    ).filter(Boolean);
+    
+    const vehicle = window.vehicleManager?.getVehicle() || { basePower: 503, torque: 550 };
+    const currentVehicle = partsCatalog.currentVehicle || localStorage.getItem('selectedVehicle') || 'bmw-m3';
+    
+    localStorage.setItem('currentVehicle', currentVehicle);
+    localStorage.setItem('basePower', (vehicle.basePower || 503).toString());
+    localStorage.setItem('baseTorque', (vehicle.torque || 550).toString());
+    
+    // Save full part objects for build summary
+    localStorage.setItem('installedPartsData', JSON.stringify(installed));
+    // Save part IDs per-vehicle
+    if (window.vehicleManager) {
+        window.vehicleManager.setInstalledParts(partsCatalog.installedParts, partsCatalog.currentVehicle);
+    }
+}
+
+function showBuildSummary() {
+    const installed = partsCatalog.installedParts.map(id => 
+        partsCatalog.currentParts?.find(p => p.id === id)
+    ).filter(Boolean);
+    
+    const initialStats = partsCatalog.getInitialStats();
+    let totalPower = 0, totalTorque = 0, totalCost = 0, totalTime = 0;
+    let totalBoostGain = 0, totalTimingGain = 0;
+    installed.forEach(part => {
+        totalPower += part.powerGain || 0;
+        totalTorque += part.torqueGain || 0;
+        totalCost += part.cost || 0;
+        totalTime += part.difficulty || 0;
+        totalBoostGain += part.boostGain || 0;
+        totalTimingGain += part.timingGain || 0;
+    });
+    
+    document.getElementById('initial-power').textContent = initialStats.hp + ' HP';
+    document.getElementById('initial-torque').textContent = initialStats.torque + ' Nm';
+    document.getElementById('initial-boost').textContent = initialStats.boost + ' psi';
+    document.getElementById('initial-timing').textContent = initialStats.timing + '°';
+    document.getElementById('initial-afr').textContent = initialStats.afr + ':1';
+    document.getElementById('installed-count').textContent = installed.length;
+    document.getElementById('total-cost').textContent = totalCost.toLocaleString();
+    document.getElementById('total-time').textContent = totalTime;
+    document.getElementById('final-power').textContent = '+' + totalPower + ' HP';
+    document.getElementById('final-torque').textContent = '+' + totalTorque + ' Nm';
+    document.getElementById('final-boost').textContent = (initialStats.boost + totalBoostGain) + ' psi';
+    document.getElementById('final-timing').textContent = (initialStats.timing + totalTimingGain) + '°';
+    document.getElementById('final-afr').textContent = (initialStats.afr - totalBoostGain * 0.1).toFixed(1) + ':1';
+    
+    const listEl = document.getElementById('installed-parts-list');
+    if (installed.length > 0) {
+        listEl.innerHTML = installed.map(part => `
+            <div class="list-group-item bg-transparent border-0 border-start ps-0 d-flex justify-content-between">
+                <div><strong>${part.name}</strong><br><small class="text-muted">Stage ${part.stages?.[0] || 1}</small></div>
+                <div class="text-end"><span class="text-success">+${part.powerGain} HP</span><br><small class="text-muted">$${part.cost} • ${part.difficulty}h</small></div>
+            </div>
+        `).join('');
+    } else {
+        listEl.innerHTML = '<p class="text-muted">No parts installed yet. Add parts to see your build progress.</p>';
+    }
+    
+    const modal = new bootstrap.Modal(document.getElementById('buildSummaryModal'));
+    modal.show();
+}
+
+function showApplyBuildModal() {
+    const installed = partsCatalog.installedParts.map(id => 
+        partsCatalog.currentParts?.find(p => p.id === id)
+    ).filter(Boolean);
+    
+    const initialStats = partsCatalog.getInitialStats();
+    let totalPower = 0, totalTorque = 0, totalCost = 0, totalTime = 0;
+    let totalBoostGain = 0, totalTimingGain = 0;
+    installed.forEach(part => {
+        totalPower += part.powerGain || 0;
+        totalTorque += part.torqueGain || 0;
+        totalCost += part.cost || 0;
+        totalTime += part.difficulty || 0;
+        totalBoostGain += part.boostGain || 0;
+        totalTimingGain += part.timingGain || 0;
+    });
+    
+    const initialHP = initialStats.hp;
+    const initialTorque = initialStats.torque;
+    const initialBoost = initialStats.boost;
+    const initialTiming = initialStats.timing;
+    const initialAFR = initialStats.afr;
+    
+    const finalHP = initialHP + totalPower;
+    const finalTorque = initialTorque + totalTorque;
+    const finalBoost = initialBoost + totalBoostGain;
+    const finalTiming = initialTiming + totalTimingGain;
+    
+    document.getElementById('apply-total-cost').textContent = totalCost.toLocaleString();
+    document.getElementById('apply-total-time').textContent = totalTime;
+    document.getElementById('apply-parts-count').textContent = installed.length;
+    
+    const partsListEl = document.getElementById('apply-parts-list');
+    if (installed.length > 0) {
+        partsListEl.innerHTML = installed.map(part => `
+            <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                <div>
+                    <strong>${part.name}</strong>
+                    <br><small class="text-muted">Stage ${part.stages?.[0] || 1} • ${part.category}</small>
+                </div>
+                <div class="text-end">
+                    <span class="text-success">+${part.powerGain || 0} HP</span>
+                    <br><small class="text-muted">$${part.cost} • ${part.difficulty}h</small>
+                </div>
+            </div>
+        `).join('');
+    } else {
+        partsListEl.innerHTML = '<p class="text-muted">No parts selected. Add parts to your build.</p>';
+    }
+    
+    document.getElementById('apply-initial-hp').textContent = initialHP;
+    document.getElementById('apply-initial-torque').textContent = initialTorque;
+    document.getElementById('apply-initial-boost').textContent = initialBoost;
+    document.getElementById('apply-initial-timing').textContent = initialTiming;
+    document.getElementById('apply-initial-afr').textContent = initialAFR;
+    document.getElementById('apply-power-gain').textContent = '+' + totalPower;
+    document.getElementById('apply-torque-gain').textContent = '+' + totalTorque;
+    document.getElementById('apply-boost-change').textContent = totalBoostGain >= 0 ? '+' + totalBoostGain : totalBoostGain;
+    document.getElementById('apply-timing-change').textContent = totalTimingGain >= 0 ? '+' + totalTimingGain : totalTimingGain;
+    
+    document.getElementById('apply-final-hp').textContent = finalHP;
+    document.getElementById('apply-final-torque').textContent = finalTorque;
+    document.getElementById('apply-final-boost').textContent = finalBoost;
+    document.getElementById('apply-final-timing').textContent = finalTiming;
+    
+    const modal = new bootstrap.Modal(document.getElementById('applyBuildModal'));
+    modal.show();
+}
+
+function applyBuild() {
+    const installed = partsCatalog.installedParts.map(id => 
+        partsCatalog.currentParts?.find(p => p.id === id)
+    ).filter(Boolean);
+    
+    if (installed.length === 0) {
+        showToast('No parts selected to apply.', 'warning');
+        return;
+    }
+    
+    let totalCost = 0, totalTime = 0, totalPower = 0, totalTorque = 0;
+    installed.forEach(part => {
+        totalCost += part.cost || 0;
+        totalTime += part.difficulty || 0;
+        totalPower += part.powerGain || 0;
+        totalTorque += part.torqueGain || 0;
+    });
+    
+    if (window.apiClient) {
+        window.apiClient.saveVehicleBuild({
+            vehicleId: partsCatalog.currentVehicle,
+            installedParts: installed
+        }).then(result => {
+            if (result.success) {
+                if (window.vehicleManager) {
+                    window.vehicleManager.setInstalledParts(partsCatalog.installedParts, partsCatalog.currentVehicle);
+                }
+            } else {
+                showToast(result.error || 'Failed to save build', 'error');
+            }
+        }).catch(err => {
+            if (window.vehicleManager) {
+                window.vehicleManager.setInstalledParts(partsCatalog.installedParts, partsCatalog.currentVehicle);
+            }
+            bootstrap.Modal.getInstance(document.getElementById('applyBuildModal'))?.hide();
+            showToast(`Applied build with ${installed.length} parts! Total: $${totalCost.toLocaleString()}`, 'success');
+        });
+    } else {
+        if (window.vehicleManager) {
+            window.vehicleManager.setInstalledParts(partsCatalog.installedParts, partsCatalog.currentVehicle);
+        }
+        bootstrap.Modal.getInstance(document.getElementById('applyBuildModal'))?.hide();
+        showToast(`Applied build with ${installed.length} parts! Total: $${totalCost.toLocaleString()}`, 'success');
+    }
+}
+
+function revertBuild() {
+    if (partsCatalog.installedParts.length === 0) {
+        showToast('No parts to revert.', 'info');
+        return;
+    }
+    if (confirm('Are you sure you want to revert all installed parts? This will clear your entire build.')) {
+        if (window.apiClient && window.vehicleManager) {
+            window.apiClient.saveVehicleBuild({
+                vehicleId: partsCatalog.currentVehicle,
+                installedParts: []
+            }).catch(() => {});
+        }
+        if (window.vehicleManager) {
+            window.vehicleManager.clearInstalledParts(partsCatalog.currentVehicle);
+        }
+        partsCatalog.installedParts = [];
+        localStorage.removeItem('installedPartsData');
+        partsCatalog.loadParts();
+        partsCatalog.filterParts();
+        updateVehicleDisplay();
+        showToast('Build reverted. All parts removed.', 'info');
+    }
+}
+
+function updateDropdownStats() {
+    // No longer needed - updateVehicleDisplay() handles all vehicle stats
+    // Kept for backward compatibility
+}
+
+async function updateNavButtons() {
+     try {
+         const result = await fetch('/api/check-auth', { credentials: 'include' });
+         const data = await result.json();
+         const navButtons = document.querySelector('nav .ms-auto');
+         if (data.authenticated && navButtons) {
+             const vehicle = window.vehicleManager?.getVehicle() || { make: 'BMW', model: 'M3' };
+navButtons.innerHTML = `
+                  <a href="profile.html" class="btn rounded-pill px-3 fw-semibold" style="background: rgba(24, 103, 132, 0.2); color: var(--sand-beige);">
+                      <i class="fas fa-user-cog" style="color: var(--performance-blue);"></i>
+                  </a>
+                  <span class="btn rounded-pill px-3 align-self-center" style="background: rgba(154, 124, 101, 0.2); color: var(--sand-beige);">
+                      <i class="fas fa-car me-2" style="color: var(--performance-blue);"></i><span id="nav-vehicle-name">${vehicle.make} ${vehicle.model}</span>
+                  </span>
+                  <a href="vehicle-select.html?return=parts-catalog.html" class="btn rounded-pill px-4" style="background: rgba(24, 103, 132, 0.2); color: var(--sand-beige);">Change</a>
+              `;
+         }
+     } catch (err) {}
+ }
+
+document.addEventListener('DOMContentLoaded', async function() {
+     await partsCatalog.init();
+     
+     // Update modal vehicle info when AI Assistant Modal shows
+     const aiModal = document.getElementById('aiAssistantModal');
+     if (aiModal) {
+         aiModal.addEventListener('show.bs.modal', function() {
+             updateVehicleDisplay();
+         });
+     }
+    
+    // Chat functionality
+    const chatInput = document.getElementById('chat-input');
+    const chatSend = document.getElementById('chat-send');
+    const chatMessages = document.getElementById('chat-messages');
+    const agentCheck = document.getElementById('agent-check');
+    const chatClose = document.getElementById('chat-close');
+    
+    function sendMessage() {
+        const message = chatInput.value.trim();
+        if (!message) return;
+        
+        const userMsg = document.createElement('div');
+        userMsg.className = 'chat-message user';
+        userMsg.textContent = message;
+        userMsg.style.cssText = 'background: rgba(24, 103, 132, 0.2); color: var(--light-cream); border: 1px solid rgba(24, 103, 132, 0.3);';
+        chatMessages.appendChild(userMsg);
+        chatInput.value = '';
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        
+        const botMsg = document.createElement('div');
+        botMsg.className = 'chat-message bot';
+        botMsg.textContent = 'Thinking...';
+        botMsg.style.cssText = 'background: rgba(24, 103, 132, 0.1); color: var(--light-cream); border: 1px solid rgba(24, 103, 132, 0.2);';
+        chatMessages.appendChild(botMsg);
+        
+        window.apiClient.chat(message).then(result => {
+            if (chatMessages.lastElementChild) {
+                chatMessages.lastElementChild.remove();
+            }
+            const reply = document.createElement('div');
+            reply.className = 'chat-message bot';
+            reply.textContent = result.response;
+            reply.style.cssText = 'background: rgba(24, 103, 132, 0.1); color: var(--light-cream); border: 1px solid rgba(24, 103, 132, 0.2);';
+            chatMessages.appendChild(reply);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }).catch(() => {
+            if (chatMessages.lastElementChild) {
+                chatMessages.lastElementChild.textContent = 'Sorry, I could not process that request.';
+            }
+        });
+    }
+    
+    if (chatSend) {
+        chatSend.addEventListener('click', sendMessage);
+    }
+    if (chatInput) {
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendMessage();
+        });
+    }
+    if (chatClose) {
+        chatClose.addEventListener('click', function() {
+            agentCheck.checked = false;
+        });
+    }
+    
+    // Filter event listeners
+    document.getElementById('stage-filter')?.addEventListener('change', function() {
+        partsCatalog.filterParts();
+    });
+    document.getElementById('goal-filter')?.addEventListener('change', function() {
+        partsCatalog.filterParts();
+    });
+    document.getElementById('category-filter')?.addEventListener('change', function() {
+        partsCatalog.filterParts();
+    });
+    document.getElementById('price-filter')?.addEventListener('change', function() {
+        partsCatalog.filterParts();
+    });
+});
+</script>
+</body>
+</html>

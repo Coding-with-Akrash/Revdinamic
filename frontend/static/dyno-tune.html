@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dyno Tuning | RevDynamics</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body style="background: linear-gradient(135deg, #000101 0%, #0C2E3D 50%, #000101 100%); min-height: 100vh;">
+
+<nav class="navbar navbar-expand-lg py-3">
+    <div class="container">
+        <a class="navbar-brand fw-bold d-flex align-items-center" href="index.html">
+            <img src="IMG/Gemini_Generated_Image_29cg2x29cg2x29cg.png" style="width:44.59px;height:44.59px;">
+            <span class="text-gradient">RevDynamics</span>
+        </a>
+        <div class="ms-auto d-flex gap-2" id="nav-buttons">
+            <a href="profile.html" class="btn rounded-pill px-3 fw-semibold" style="background: rgba(24, 103, 132, 0.2); color: var(--sand-beige);">
+                <i class="fas fa-user-cog" style="color: var(--performance-blue);"></i>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<script>
+    async function logout() {
+        await fetch('/api/logout', { method: 'POST', credentials: 'include' });
+        window.location.href = 'welcome.html';
+    }
+</script>
+
+<div class="container-fluid py-4">
+    <div class="row g-4">
+        <div class="col-lg-5 d-flex flex-column">
+            <div class="card border rounded-4 shadow-sm mb-3" style="background: rgba(255, 255, 255, 0.05);">
+                <div class="p-3">
+                    <h6 class="mb-3" style="color: var(--sand-beige);"><i class="fas fa-tachometer-alt me-2" style="color: var(--performance-blue);"></i>Live Vehicle Metrics</h6>
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="gauge-card p-3 rounded-4 text-center">
+                                <h6 class="mb-2 text-secondary-visible">RPM</h6>
+                                <small class="text-secondary-visible d-block mb-2">x1000</small>
+                                <div class="gauge-value" id="rpm-value" style="font-size: 2rem;">--</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="gauge-card p-3 rounded-4 text-center">
+                                <h6 class="mb-2 text-secondary-visible">SPEED</h6>
+                                <small class="text-secondary-visible d-block mb-2">km/h</small>
+                                <div class="gauge-value" id="speed-value" style="font-size: 2rem;">--</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="gauge-card p-3 rounded-4 text-center">
+                                <h6 class="mb-2 text-secondary-visible">POWER</h6>
+                                <small class="text-secondary-visible d-block mb-2">HP</small>
+                                <div class="gauge-value" id="power-value" style="font-size: 2rem;">--</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="gauge-card p-3 rounded-4 text-center">
+                                <h6 class="mb-2 text-secondary-visible">TORQUE</h6>
+                                <small class="text-secondary-visible d-block mb-2">Nm</small>
+                                <div class="gauge-value" id="torque-value" style="font-size: 2rem;">--</div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="gauge-card p-3 rounded-4 text-center">
+                                <h6 class="mb-2 text-secondary-visible">TEMP</h6>
+                                <small class="text-secondary-visible d-block mb-2">°C</small>
+                                <div class="gauge-value" id="temp-value" style="font-size: 2rem;">--</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card border rounded-4 shadow-sm" style="background: rgba(255, 255, 255, 0.05);">
+                <div class="d-flex gap-2 p-2" style="background: rgba(0,0,0,0.1);">
+                    <button class="btn btn-sm rounded-pill flex-fill active" id="manual-tune-tab" data-tab="manual" style="background: linear-gradient(135deg, var(--performance-blue), var(--metallic-bronze)); color: var(--light-cream);">
+                        <i class="fas fa-sliders-h me-1"></i>Manual Tune
+                    </button>
+                    <button class="btn btn-sm rounded-pill flex-fill" id="ai-tune-tab" data-tab="ai" style="background: rgba(24, 103, 132, 0.2); color: var(--sand-beige);">
+                        <i class="fas fa-magic me-1"></i>AI Tune
+                    </button>
+                    <button class="btn btn-sm rounded-pill flex-fill" id="live-tune-tab" data-tab="live" style="background: rgba(154, 124, 101, 0.2); color: var(--sand-beige);">
+                        <i class="fas fa-bolt me-1"></i>Live Tune
+                    </button>
+                </div>
+                
+                <div class="p-3" id="tune-content">
+                    <div id="manual-tune-content">
+                        <div class="mb-3">
+                            <label class="form-label small d-flex justify-content-between">
+                                <span style="color: var(--sand-beige);">AFR (Air-Fuel Ratio)</span>
+                                <span id="fuel-trim-value" class="fw-medium" style="color: var(--performance-blue);">12.5:1</span>
+                            </label>
+                            <input type="range" class="form-range" min="10" max="20" step="0.1" value="12.5" id="fuel-trim" oninput="document.getElementById('fuel-trim-value').textContent = this.value + ':1'">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small d-flex justify-content-between">
+                                <span style="color: var(--sand-beige);">Timing Advance</span>
+                                <span id="timing-value" class="fw-medium" style="color: var(--metallic-bronze);">24°</span>
+                            </label>
+                            <input type="range" class="form-range" min="10" max="40" value="24" id="timing" oninput="document.getElementById('timing-value').textContent = this.value + '°'">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small d-flex justify-content-between">
+                                <span style="color: var(--sand-beige);">Boost Pressure</span>
+                                <span id="boost-value" class="fw-medium" style="color: var(--sand-beige);">12 psi</span>
+                            </label>
+                            <input type="range" class="form-range" min="0" max="30" value="12" id="boost" oninput="document.getElementById('boost-value').textContent = this.value + ' psi'">
+                        </div>
+                        <hr style="border-color: rgba(154, 124, 101, 0.3);">
+                        <div class="mb-3">
+                            <label class="form-label small" style="color: var(--sand-beige);">Fuel Map</label>
+                            <select class="form-select" id="manual-fuel-map" style="background: rgba(255,255,255,0.1); color: var(--light-cream); border: 1px solid rgba(154, 124, 101, 0.3);">
+                                <option value="stock">Stock (Default)</option>
+                                <option value="lean">Lean (+2% efficiency)</option>
+                                <option value="rich">Rich (+5% power)</option>
+                                <option value="aggressive">Aggressive (+10% power, -3% efficiency)</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small" style="color: var(--sand-beige);">Ignition Map</label>
+                            <select class="form-select" id="manual-ignition-map" style="background: rgba(255,255,255,0.1); color: var(--light-cream); border: 1px solid rgba(154, 124, 101, 0.3);">
+                                <option value="stock">Stock (Default)</option>
+                                <option value="advancing">Advancing (+2° timing)</option>
+                                <option value="race">Race (+5° timing)</option>
+                                <option value="sprint">Sprint (+8° timing, aggressive)</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small" style="color: var(--sand-beige);">Launch Control</label>
+                            <select class="form-select" id="manual-launch-ctrl" style="background: rgba(255,255,255,0.1); color: var(--light-cream); border: 1px solid rgba(154, 124, 101, 0.3);">
+                                <option value="disabled">Disabled (Default)</option>
+                                <option value="enabled">Enabled (3200 RPM)</option>
+                                <option value="aggressive">Aggressive (4000 RPM)</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small d-flex justify-content-between" style="color: var(--sand-beige);">
+                                <span>Turbo Boost Control</span>
+                                <span id="manual-turbo-value">14.5 psi</span>
+                            </label>
+                            <input type="range" class="form-range" min="8" max="25" step="0.5" value="14.5" id="manual-turbo" oninput="document.getElementById('manual-turbo-value').textContent = this.value + ' psi'">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small" style="color: var(--sand-beige);">Knock Control</label>
+                            <select class="form-select" id="manual-knock" style="background: rgba(255,255,255,0.1); color: var(--light-cream); border: 1px solid rgba(154, 124, 101, 0.3);">
+                                <option value="standard">Standard (Default)</option>
+                                <option value="advanced">Advanced (High Sensitivity)</option>
+                                <option value="disabled">Disabled (Track Only)</option>
+                            </select>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn rounded-pill w-100" onclick="revertQuickTune()" style="background: rgba(154, 124, 101, 0.2); color: var(--sand-beige);">
+                                <i class="fas fa-undo me-2"></i>Revert Quick Tune
+                            </button>
+                            <button class="btn rounded-pill w-100" onclick="applyManualTune()" style="background: linear-gradient(135deg, var(--performance-blue), var(--metallic-bronze)); color: var(--light-cream);">
+                                <i class="fas fa-check me-2"></i>Apply Tune
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="ai-tune-content" class="d-none">
+                        <div class="mb-3">
+                            <label class="form-label small" style="color: var(--sand-beige);">Driving Goal</label>
+                            <select class="form-select" id="ai-tune-goal" onchange="generateAITune()" style="background: rgba(255,255,255,0.1); color: var(--light-cream); border: 1px solid rgba(154, 124, 101, 0.3);">
+                                <option value="daily">Daily Driver</option>
+                                <option value="street">Street Performance</option>
+                                <option value="track" selected>Track / Track Day</option>
+                                <option value="drag">Drag Racing</option>
+                            </select>
+                        </div>
+                        <div id="ai-tune-results" class="mb-3">
+                            <p class="text-muted" style="color: var(--sand-beige) !important;">Select a driving goal for AI-recommended settings.</p>
+                        </div>
+                        <button class="btn rounded-pill w-100" onclick="applyAITune()" style="background: linear-gradient(135deg, var(--performance-blue), var(--metallic-bronze)); color: var(--light-cream);">Apply AI Tune</button>
+                    </div>
+                    
+                    <div id="live-tune-content" class="d-none">
+                        <p class="mb-3" style="color: var(--sand-beige);">Live tune reads parameters directly from OBD-II data stream.</p>
+                        <button class="btn rounded-pill w-100" id="live-tune-btn" onclick="startLiveTuning()" style="background: rgba(220, 38, 38, 0.2); color: var(--light-cream);">
+                            <i class="fas fa-bolt me-2"></i>Start Live Tuning
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-7">
+            <div class="card border rounded-4 shadow-sm mb-4" style="background: rgba(255, 255, 255, 0.05);">
+                <div class="d-flex justify-content-between align-items-center mb-3 p-3">
+                    <h5 class="mb-0" style="color: var(--light-cream);"><i class="fas fa-chart-line me-2" style="color: var(--performance-blue);"></i>Live Performance Metrics</h5>
+                    <span class="badge rounded-pill px-3" id="obd-metrics-status" style="background: linear-gradient(135deg, var(--metallic-bronze), var(--performance-blue)); color: var(--light-cream);">Ready</span>
+                </div>
+                <div class="px-3" style="height: 300px;">
+                    <canvas id="liveChart"></canvas>
+                </div>
+<div class="p-3 border-top" style="border-color: rgba(154, 124, 101, 0.2);">
+                    <div class="d-flex gap-2">
+<button id="start-sim-btn" class="btn btn-sm rounded-pill flex-fill" onclick="startSimulation(); return false;" style="background: rgba(24, 103, 132, 0.3); color: var(--sand-beige); border: 1px solid rgba(24, 103, 132, 0.4);">
+          <i class="fas fa-play me-1"></i>Start Simulation
+      </button>
+                        <button class="btn btn-sm rounded-pill flex-fill" onclick="stopSimulation()" style="background: rgba(220, 38, 38, 0.2); color: var(--sand-beige); border: 1px solid rgba(220, 38, 38, 0.4);">
+                            <i class="fas fa-stop me-1"></i>Stop Simulation
+                        </button>
+                        <button class="btn btn-sm rounded-pill flex-fill" onclick="startObdReading()" style="background: rgba(154, 124, 101, 0.3); color: var(--sand-beige); border: 1px solid rgba(154, 124, 101, 0.4);">
+                            <i class="fas fa-plug me-1"></i>Start OBD2 Reading
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border rounded-4 shadow-sm" style="background: rgba(255, 255, 255, 0.05);">
+                <div class="d-flex justify-content-between align-items-center mb-3 p-3">
+                    <h5 class="mb-0" style="color: var(--light-cream);"><i class="fas fa-chart-area me-2" style="color: var(--metallic-bronze);"></i>Dyno Power & Torque Curve</h5>
+                    <div class="btn-group">
+                        <button class="btn btn-sm rounded-pill px-3" style="background: rgba(24, 103, 132, 0.2); color: var(--sand-beige);">Last Run</button>
+                        <button class="btn btn-sm rounded-pill px-3" style="background: rgba(154, 124, 101, 0.2); color: var(--sand-beige);">Previous</button>
+                        <button class="btn btn-sm rounded-pill px-3" style="background: rgba(24, 103, 132, 0.2); color: var(--sand-beige);">Best</button>
+                    </div>
+                </div>
+                <div class="px-3" style="height: 400px;">
+                    <canvas id="dynoCurveChart"></canvas>
+                </div>
+                
+</div>
+    </div>
+
+    <footer class="py-3 text-center border-top mt-5" style="border-color: rgba(154, 124, 101, 0.2);">
+        <small style="color: var(--sand-beige);">&copy; 2026 RevDynamics - Dyno Tuning Interface</small>
+    </footer>
+
+    <div class="modal fade" id="obdConnectModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content" style="background: rgba(12, 46, 61, 0.95); border: 1px solid rgba(154, 124, 101, 0.3);">
+                <div class="modal-header border-0" style="background: linear-gradient(135deg, var(--performance-blue), var(--metallic-bronze));">
+                    <h5 class="modal-title" style="color: var(--light-cream);"><i class="fas fa-plug me-2"></i>OBD-II Connection</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" style="color: var(--light-cream);">
+                    <div class="mb-3">
+                        <label class="form-label small" style="color: var(--sand-beige);">Connection Type</label>
+                        <div class="d-flex gap-2">
+                            <button class="btn w-100" onclick="selectObdType('bluetooth')" style="background: rgba(24, 103, 132, 0.2); color: var(--sand-beige);"><i class="fas fa-bluetooth me-2"></i>Bluetooth</button>
+                            <button class="btn w-100" onclick="selectObdType('usb')" style="background: rgba(154, 124, 101, 0.2); color: var(--sand-beige);"><i class="fas fa-usb me-2"></i>USB</button>
+                            <button class="btn w-100" onclick="selectObdType('wifi')" style="background: rgba(24, 103, 132, 0.2); color: var(--sand-beige);"><i class="fas fa-wifi me-2"></i>WiFi</button>
+                        </div>
+                    </div>
+<div id="obd-config">
+                         <div class="mb-3">
+                             <label class="form-label small" style="color: var(--sand-beige);">Adapter Name/ID</label>
+                             <input type="text" class="form-control" id="obd-adapter-name" placeholder="OBDLink MX+, ELM327, etc." style="background: rgba(255,255,255,0.1); color: var(--light-cream); border: 1px solid rgba(154, 124, 101, 0.3);" required>
+                         </div>
+                         <div class="mb-3" id="obd-port-group">
+                             <label class="form-label small" style="color: var(--sand-beige);">COM Port / Device / IP</label>
+                             <input type="text" class="form-control" id="obd-port" placeholder="COM3, /dev/ttyUSB0, 192.168.1.100" style="background: rgba(255,255,255,0.1); color: var(--light-cream); border: 1px solid rgba(154, 124, 101, 0.3);" required>
+                         </div>
+                         <div class="mb-3">
+                             <label class="form-label small" style="color: var(--sand-beige);">Baud Rate</label>
+                             <select class="form-select" id="obd-baud-rate" style="background: rgba(255,255,255,0.1); color: var(--light-cream); border: 1px solid rgba(154, 124, 101, 0.3);">
+                                 <option value="9600">9600</option>
+                                 <option value="38400" selected>38400</option>
+                                 <option value="115200">115200</option>
+                             </select>
+                         </div>
+                         <div class="mb-3">
+                             <label class="form-label small" style="color: var(--sand-beige);">Connection Status</label>
+                             <div id="obd-connect-status" class="p-2 rounded" style="background: rgba(220, 38, 38, 0.2); color: var(--light-cream);">Not connected</div>
+                         </div>
+                         <div class="text-danger small" id="obd-error-msg" style="display: none;"></div>
+                     </div>
+                 </div>
+                 <div class="modal-footer border-0 d-flex justify-content-between">
+                     <button type="button" class="btn rounded-pill" data-bs-dismiss="modal" style="background: rgba(154, 124, 101, 0.2); color: var(--sand-beige);">Cancel</button>
+                     <button type="button" class="btn rounded-pill" id="obd-connect-btn" onclick="connectObdAdapter()" style="background: linear-gradient(135deg, var(--performance-blue), var(--metallic-bronze)); color: var(--light-cream);" disabled>Connect</button>
+                 </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="/js/api-client.js"></script>
+    <script src="/js/vehicle-manager.js"></script>
+    <script src="/js/auth-guard.js"></script>
+    <script src="/js/main.js"></script>
+    <script>
+        (async function() {
+            try {
+                const result = await fetch('/api/check-auth', { credentials: 'include' });
+                const data = await result.json();
+                if (!data.authenticated) {
+                    window.location.href = 'welcome.html';
+                    return;
+                }
+            } catch (err) {
+                window.location.href = 'welcome.html';
+            }
+        })();
+    </script>
+    <script>
+async function updateNavButtons() {
+             try {
+                 const result = await fetch('/api/check-auth', { credentials: 'include' });
+                 const data = await result.json();
+                 const navButtons = document.querySelector('nav .ms-auto');
+                 if (data.authenticated && navButtons) {
+                     const vehicle = window.vehicleManager?.getVehicle() || { make: 'BMW', model: 'M3' };
+                     const activeTab = document.querySelector('[data-tab].active')?.dataset.tab || 'manual';
+                     navButtons.innerHTML = `
+                         <a href="profile.html" class="btn rounded-pill px-3 fw-semibold" style="background: rgba(24, 103, 132, 0.2); color: var(--sand-beige);">
+                             <i class="fas fa-user-cog" style="color: var(--performance-blue);"></i>
+                         </a>
+                         <span class="btn rounded-pill px-3 align-self-center" style="background: rgba(154, 124, 101, 0.2); color: var(--sand-beige);">
+                             <i class="fas fa-car me-2" style="color: var(--performance-blue);"></i><span id="current-vehicle">${vehicle.make} ${vehicle.model}</span>
+                         </span>
+                         <a href="vehicle-select.html?return=dyno-tune.html&tab=${activeTab}" class="btn rounded-pill px-4" style="background: rgba(24, 103, 132, 0.2); color: var(--sand-beige);">Change</a>
+                     `;
+                 }
+             } catch (err) {}
+         }
+
+async function initNav() {
+    const savedVehicle = localStorage.getItem('selectedVehicle');
+    const urlParams = new URLSearchParams(window.location.search);
+    const vehicleParam = urlParams.get("vehicle") || savedVehicle;
+    const tabParam = urlParams.get("tab");
+    if (window.vehicleManager) {
+        await window.vehicleManager.setVehicle(vehicleParam);
+        window.currentVehicle = vehicleParam;
+    }
+    if (tabParam) {
+        switchTab(tabParam);
+    }
+    await updateNavButtons();
+}
+    </script>
+    <script>
+    function generateAITune() {
+        const goal = document.getElementById("ai-tune-goal")?.value || "track";
+        const resultsDiv = document.getElementById("ai-tune-results");
+        if (!resultsDiv) return;
+
+        const presets = {
+            daily: {afr: 14.7, timing: 15, boost: 8},
+            street: {afr: 13.0, timing: 18, boost: 10},
+            track: {afr: 12.5, timing: 24, boost: 14.5},
+            drag: {afr: 12.0, timing: 32, boost: 18}
+        };
+        const tune = presets[goal] || presets.track;
+
+        resultsDiv.innerHTML = `
+            <div class="card rounded-4 p-4 mb-3" style="background: rgba(255,255,255,0.05);">
+                <h6 class="fw-bold mb-3" style="color: var(--performance-blue);">AI Recommended Tune Parameters</h6>
+                <div class="row g-2">
+                    <div class="col-4"><strong style="color: var(--sand-beige);">AFR:</strong> <span style="color: var(--metallic-bronze);">${tune.afr}:1</span></div>
+                    <div class="col-4"><strong style="color: var(--sand-beige);">Timing:</strong> <span style="color: var(--performance-blue);">${tune.timing}°</span></div>
+                    <div class="col-4"><strong style="color: var(--sand-beige);">Boost:</strong> <span style="color: var(--sand-beige);">${tune.boost} psi</span></div>
+                </div>
+                <hr style="border-color: rgba(154, 124, 101, 0.3);">
+                <small style="color: var(--sand-beige);">Optimized for ${goal} driving. These settings balance performance and reliability.</small>
+            </div>
+        `;
+    }
+
+    function applyAITune() {
+        const applyBtn = document.querySelector('#ai-tune-content button[onclick="applyAITune()"]');
+        const originalText = applyBtn?.innerHTML;
+        if (applyBtn) {
+            applyBtn.disabled = true;
+            applyBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Applying...';
+        }
+        const goal = document.getElementById("ai-tune-goal")?.value || "track";
+        generateAITune();
+        
+        const presets = {
+            daily: {afr: 14.7, timing: 15, boost: 8},
+            street: {afr: 13.0, timing: 18, boost: 10},
+            track: {afr: 12.5, timing: 24, boost: 14.5},
+            drag: {afr: 12.0, timing: 32, boost: 18}
+        };
+        const tune = presets[goal] || presets.track;
+
+        const tuneData = {
+            vehicleId: window.currentVehicle,
+            afr: tune.afr,
+            timing: tune.timing,
+            boost: tune.boost,
+            knock: "standard"
+        };
+
+        window.apiClient.applyTune(tuneData).then(result => {
+            if (result.success) {
+                document.getElementById("fuel-trim").value = tune.afr;
+                document.getElementById("timing").value = tune.timing;
+                document.getElementById("boost").value = tune.boost;
+                document.getElementById("fuel-trim-value").textContent = tune.afr + ":1";
+                document.getElementById("timing-value").textContent = tune.timing + "°";
+                document.getElementById("boost-value").textContent = tune.boost + " psi";
+                loadDynoCurve();
+                updateEstimatedGains();
+                switchTab('manual');
+                showToast("AI tune applied successfully!", "success");
+            } else {
+                if (applyBtn) {
+                    applyBtn.disabled = false;
+                    applyBtn.innerHTML = originalText;
+                }
+                showToast("Failed to apply AI tune", "error");
+            }
+        }).catch(() => {
+            if (applyBtn) {
+                applyBtn.disabled = false;
+                applyBtn.innerHTML = originalText;
+            }
+            showToast("Connection error - check backend", "error");
+        });
+    }
+
+    function setAFR(value) {
+        const afrSlider = document.getElementById("fuel-trim");
+        if (afrSlider) {
+            afrSlider.value = value;
+            document.getElementById("fuel-trim-value").textContent = value + ":1";
+        }
+    }
+
+    function startLiveTuning() {
+        const liveBtn = document.getElementById('live-tune-btn');
+        const originalText = liveBtn?.innerHTML;
+        if (liveBtn) {
+            liveBtn.disabled = true;
+            liveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Connecting...';
+        }
+        if (!obdConnected) {
+            const modalEl = document.getElementById('obdConnectModal');
+            if (modalEl) {
+                const modal = new bootstrap.Modal(modalEl);
+                modal.show();
+            }
+        } else {
+            if (liveBtn) {
+                liveBtn.disabled = false;
+                liveBtn.innerHTML = originalText;
+            }
+            showToast('Live tuning active with OBD connection', 'info');
+        }
+    }
+
+    function showToast(message, type = 'info') {
+        const toastContainer = document.getElementById('toast-container') || createToastContainer();
+        const toastEl = document.createElement('div');
+        const bgClass = type === 'success' ? 'linear-gradient(135deg, var(--performance-blue), var(--metallic-bronze))' : 
+                      type === 'error' ? 'rgba(220, 38, 38, 0.9)' : 'rgba(24, 103, 132, 0.9)';
+        toastEl.className = 'toast align-items-center text-white border-0 mb-2';
+        toastEl.setAttribute('role', 'alert');
+        toastEl.style.background = bgClass;
+        toastEl.innerHTML = `
+            <div class="d-flex">
+                <div class="toast-body">${message}</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        `;
+        toastContainer.appendChild(toastEl);
+        const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+        toast.show();
+        setTimeout(() => toastEl.remove(), 3500);
+    }
+
+    function createToastContainer() {
+        const container = document.createElement('div');
+        container.id = 'toast-container';
+        container.className = 'position-fixed bottom-0 end-0 p-3';
+        container.style.zIndex = '1080';
+        document.body.appendChild(container);
+        return container;
+    }
+
+    function applyManualTune() {
+        const applyBtn = document.querySelector('#manual-tune-content button[onclick="applyManualTune()"]');
+        const originalText = applyBtn?.innerHTML;
+        if (applyBtn) {
+            applyBtn.disabled = true;
+            applyBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Applying...';
+        }
+
+        const afr = parseFloat(document.getElementById("fuel-trim")?.value || 12.5);
+        const timing = parseInt(document.getElementById("timing")?.value || 24);
+        const boost = parseInt(document.getElementById("boost")?.value || 12);
+        const knock = document.getElementById("manual-knock")?.value || "standard";
+        const fuelMap = document.getElementById("manual-fuel-map")?.value || "stock";
+        const ignitionMap = document.getElementById("manual-ignition-map")?.value || "stock";
+        const launchCtrl = document.getElementById("manual-launch-ctrl")?.value || "disabled";
+        const turboCtrl = parseFloat(document.getElementById("manual-turbo")?.value || 14.5);
+
+        const tuneData = {
+            vehicleId: window.currentVehicle,
+            afr: afr,
+            timing: timing,
+            boost: boost,
+            knock: knock,
+            fuelMap: fuelMap,
+            ignitionMap: ignitionMap,
+            launchControl: launchCtrl,
+            turboBoost: turboCtrl
+        };
+
+        window.apiClient.applyTune(tuneData).then(result => {
+            if (applyBtn) {
+                applyBtn.disabled = false;
+                applyBtn.innerHTML = originalText;
+            }
+            if (result.success) {
+                loadDynoCurve();
+                updateEstimatedGains();
+                showToast('Manual tune applied successfully!', 'success');
+            } else {
+                showToast('Failed to apply tune', 'error');
+            }
+        }).catch(() => {
+            if (applyBtn) {
+                applyBtn.disabled = false;
+                applyBtn.innerHTML = originalText;
+            }
+            showToast('Connection error - check backend', 'error');
+        });
+    }
+
+    function revertManualTune() {
+        if (confirm("Revert all tune settings to default values?")) {
+            const defaults = {
+                afr: 12.5,
+                timing: 15,
+                boost: 10,
+                knock: "standard",
+                fuelMap: "stock",
+                ignitionMap: "stock",
+                launchCtrl: "disabled",
+                turboBoost: 14.5
+            };
+
+            document.getElementById("fuel-trim").value = defaults.afr;
+            document.getElementById("timing").value = defaults.timing;
+            document.getElementById("boost").value = defaults.boost;
+            document.getElementById("manual-knock").value = defaults.knock;
+            document.getElementById("manual-fuel-map").value = defaults.fuelMap;
+            document.getElementById("manual-ignition-map").value = defaults.ignitionMap;
+            document.getElementById("manual-launch-ctrl").value = defaults.launchCtrl;
+            document.getElementById("manual-turbo").value = defaults.turboBoost;
+            
+            document.getElementById("fuel-trim-value").textContent = defaults.afr + ":1";
+            document.getElementById("timing-value").textContent = defaults.timing + "°";
+            document.getElementById("boost-value").textContent = defaults.boost + " psi";
+            document.getElementById("manual-turbo-value").textContent = defaults.turboBoost + " psi";
+
+            const tuneData = {
+                vehicleId: window.currentVehicle,
+                afr: defaults.afr,
+                timing: defaults.timing,
+                boost: defaults.boost,
+                knock: defaults.knock,
+                fuelMap: defaults.fuelMap,
+                ignitionMap: defaults.ignitionMap,
+                launchControl: defaults.launchCtrl,
+                turboBoost: defaults.turboBoost
+            };
+
+            window.apiClient.applyTune(tuneData).then(result => {
+                if (result.success) {
+                    loadDynoCurve();
+                    updateEstimatedGains();
+                    showToast("Tune settings reverted to defaults", "info");
+                }
+            });
+        }
+    }
+
+    function revertQuickTune() {
+        if (confirm("Revert quick tune sliders to default values?")) {
+            const defaults = {
+                afr: 12.5,
+                timing: 15,
+                boost: 10
+            };
+
+            document.getElementById("fuel-trim").value = defaults.afr;
+            document.getElementById("timing").value = defaults.timing;
+            document.getElementById("boost").value = defaults.boost;
+            document.getElementById("fuel-trim-value").textContent = defaults.afr + ":1";
+            document.getElementById("timing-value").textContent = defaults.timing + "°";
+            document.getElementById("boost-value").textContent = defaults.boost + " psi";
+            updateEstimatedGains();
+            showToast("Quick tune sliders reverted to defaults", "info");
+        }
+    }
+
+    // Live OBD2 data polling
+    let obdInterval = null;
+    let rpm = null, speed = null, power = null, torque = null, temp = null;
+    let peakRpm = 0, peakPower = 0, peakTorque = 0;
+    window.currentVehicle = 'bmw-m3';
+    let obdConnected = false;
+
+    function toggleObd() {
+        console.log('toggleObd clicked, obdConnected:', obdConnected);
+        if (obdConnected) {
+            handleDisconnect();
+        } else {
+            const modalEl = document.getElementById('obdConnectModal');
+            console.log('Modal element:', modalEl);
+            if (modalEl) {
+                const modal = new bootstrap.Modal(modalEl);
+                modal.show();
+            } else {
+                console.error('Modal not found');
+            }
+        }
+    }
+
+    function handleDisconnect() {
+        obdConnected = false;
+        fetch(`/api/obd-connect/${window.currentVehicle}`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({action: 'disconnect'})
+        });
+        const btn = document.getElementById('obd-toggle-btn');
+        const statusEl = document.getElementById('obd-status');
+        const metricsStatus = document.getElementById('obd-metrics-status');
+        
+        if (btn) {
+            btn.innerHTML = '<i class="fas fa-plug me-2"></i>Connect OBD-II';
+            btn.style.background = 'linear-gradient(135deg, var(--performance-blue), var(--metallic-bronze))';
+        }
+        if (statusEl) {
+            statusEl.textContent = 'Disconnected';
+            statusEl.style.background = 'linear-gradient(135deg, var(--metallic-bronze), var(--performance-blue))';
+        }
+        if (metricsStatus) {
+            metricsStatus.textContent = 'Ready';
+            metricsStatus.style.background = 'linear-gradient(135deg, var(--metallic-bronze), var(--performance-blue))';
+        }
+        if (obdInterval) clearInterval(obdInterval);
+        obdInterval = null;
+        ['rpm-value', 'speed-value', 'power-value', 'torque-value', 'temp-value'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = '--';
+        });
+    }
+
+function selectObdType(type) {
+         const adapterName = document.getElementById('obd-adapter-name');
+         const portGroup = document.getElementById('obd-port-group');
+         if (adapterName) adapterName.value = type === 'bluetooth' ? 'OBDLink MX+' : type === 'usb' ? 'ELM327 USB' : 'OBDLink LX';
+         validateObdForm();
+     }
+
+     function validateObdForm() {
+         const adapterName = document.getElementById('obd-adapter-name')?.value.trim() || '';
+         const port = document.getElementById('obd-port')?.value.trim() || '';
+         const connectBtn = document.getElementById('obd-connect-btn');
+         const errorMsg = document.getElementById('obd-error-msg');
+         
+         if (connectBtn) {
+             connectBtn.disabled = !(adapterName && port);
+         }
+         if (errorMsg) {
+             errorMsg.style.display = (adapterName && port) ? 'none' : (!adapterName || !port ? 'block' : 'none');
+             if (!adapterName && !port) {
+                 errorMsg.textContent = 'Please enter both adapter name and port/device';
+             } else if (!adapterName) {
+                 errorMsg.textContent = 'Please enter adapter name';
+             } else if (!port) {
+                 errorMsg.textContent = 'Please enter port/device';
+             }
+         }
+     }
+
+     function connectObdAdapter() {
+         const adapterName = document.getElementById('obd-adapter-name')?.value.trim();
+         const port = document.getElementById('obd-port')?.value.trim();
+         const baudRate = document.getElementById('obd-baud-rate')?.value || '38400';
+         const status = document.getElementById('obd-connect-status');
+         
+         if (!adapterName || !port) {
+             showToast('Please fill in all connection fields', 'error');
+             return;
+         }
+         
+         if (status) {
+             status.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Connecting...';
+             status.style.background = 'linear-gradient(135deg, #F59E0B, #D97706)';
+         }
+         
+         fetch(`/api/obd-connect/${window.currentVehicle}`, {
+             method: 'POST',
+             headers: {'Content-Type': 'application/json'},
+             body: JSON.stringify({action: 'connect', adapterName, port, baudRate})
+         })
+         .then(r => r.json())
+         .then(() => {
+             obdConnected = true;
+             const connectStatus = document.getElementById('obd-connect-status');
+             if (connectStatus) connectStatus.textContent = 'Connected to ' + adapterName;
+             if (connectStatus) connectStatus.style.background = 'linear-gradient(135deg, #22C55E, #16A34A)';
+             
+             const btn = document.getElementById('obd-toggle-btn');
+             const statusEl = document.getElementById('obd-status');
+             const metricsStatus = document.getElementById('obd-metrics-status');
+             
+             if (btn) {
+                 btn.innerHTML = '<i class="fas fa-unlink me-2"></i>Disconnect OBD-II';
+                 btn.style.background = 'rgba(220, 38, 38, 0.2)';
+             }
+             if (statusEl) {
+                 statusEl.textContent = 'Connected';
+                 statusEl.style.background = 'linear-gradient(135deg, #22C55E, #16A34A)';
+             }
+             if (metricsStatus) {
+                 metricsStatus.textContent = 'Live';
+                 metricsStatus.style.background = 'linear-gradient(135deg, #22C55E, #16A34A)';
+             }
+             
+             bootstrap.Modal.getInstance(document.getElementById('obdConnectModal')).hide();
+             startObdPolling();
+             showToast('OBD-II connected successfully', 'success');
+         });
+     }
+
+    function startObdPolling() {
+        if (obdInterval) clearInterval(obdInterval);
+        
+        obdInterval = setInterval(() => {
+            fetch(`/api/obd-data/${window.currentVehicle}`)
+                .then(r => r.json())
+                .then(obdData => {
+                    if (obdData.connected !== true) {
+                        ['rpm-value', 'speed-value', 'power-value', 'torque-value', 'temp-value'].forEach(id => {
+                            const el = document.getElementById(id);
+                            if (el) el.textContent = '--';
+                        });
+                        return;
+                    }
+                    rpm = (obdData.rpm / 1000).toFixed(1);
+                    speed = obdData.speed;
+                    power = obdData.horsepower;
+                    torque = obdData.torque;
+                    temp = obdData.coolantTemp;
+
+                    if (power > peakPower) peakPower = power;
+                    if (rpm && parseFloat(rpm) > peakRpm) peakRpm = parseFloat(rpm);
+
+                    const rpmEl = document.getElementById('rpm-value');
+                    const speedEl = document.getElementById('speed-value');
+                    const powerEl = document.getElementById('power-value');
+                    const torqueEl = document.getElementById('torque-value');
+                    const tempEl = document.getElementById('temp-value');
+
+                    if (rpmEl) rpmEl.textContent = rpm;
+                    if (speedEl) speedEl.textContent = speed;
+                    if (powerEl) powerEl.textContent = power;
+                    if (torqueEl) torqueEl.textContent = torque;
+                    if (tempEl) tempEl.textContent = temp;
+
+                    // Update live chart directly
+                    if (window.liveChart) {
+                        window.liveChart.data.datasets[0].data.push(rpm);
+                        window.liveChart.data.datasets[1].data.push(power);
+                        if (window.liveChart.data.datasets[0].data.length > 20) {
+                            window.liveChart.data.datasets[0].data.shift();
+                            window.liveChart.data.datasets[1].data.shift();
+                        }
+                        window.liveChart.update();
+                    }
+                })
+                .catch(() => {});
+        }, 100);
+    }
+
+function updateVehicleDisplay() {
+    const vehicle = window.vehicleManager?.getVehicle() || { make: 'BMW', model: 'M3', basePower: 503, torque: 550 };
+    const vehicleNameEl = document.getElementById('current-vehicle');
+    if (vehicleNameEl) {
+        vehicleNameEl.textContent = vehicle.make + ' ' + vehicle.model;
+    }
+    const initHpEl = document.getElementById('initial-power');
+    const initTqEl = document.getElementById('initial-torque');
+    if (initHpEl) initHpEl.textContent = vehicle.basePower + ' HP';
+    if (initTqEl) initTqEl.textContent = vehicle.torque + ' Nm';
+    const applyInitHp = document.getElementById('apply-initial-hp');
+    const applyInitTq = document.getElementById('apply-initial-torque');
+    if (applyInitHp) applyInitHp.textContent = vehicle.basePower;
+    if (applyInitTq) applyInitTq.textContent = vehicle.torque;
+}
+
+addEventListener('vehicleChanged', updateVehicleDisplay);
+
+async function initVehicleData() {
+    const vehicleParam = new URLSearchParams(window.location.search).get("vehicle");
+    if (vehicleParam) {
+        await window.vehicleManager.setVehicle(vehicleParam);
+        window.currentVehicle = vehicleParam;
+    }
+    updateVehicleDisplay();
+}
+
+document.addEventListener('DOMContentLoaded', async function() {
+      await initNav();
+      updateVehicleDisplay();
+      
+      document.querySelectorAll('[data-tab]').forEach(btn => {
+          btn.addEventListener('click', function() {
+              switchTab(this.dataset.tab);
+          });
+      });
+      
+      const adapterInput = document.getElementById('obd-adapter-name');
+      const portInput = document.getElementById('obd-port');
+      if (adapterInput) adapterInput.addEventListener('input', validateObdForm);
+      if (portInput) portInput.addEventListener('input', validateObdForm);
+  });
+    
+    function updateEstimatedGains() {
+        const afrSlider = document.getElementById("fuel-trim");
+        const afr = parseFloat(afrSlider?.value || 12.5);
+        const timingSlider = document.getElementById("timing");
+        const timing = parseFloat(timingSlider?.value || 24);
+        const boostSlider = document.getElementById("boost");
+        const boost = parseFloat(boostSlider?.value || 14.5);
+        
+        const hpGain = Math.max(0, Math.round((boost - 10) * 3 + (12.5 - afr) * 2 + (timing - 20) * 0.5));
+        const tqGain = Math.max(0, Math.round((boost - 10) * 5 + (12.5 - afr) * 3 + (timing - 20) * 0.5));
+        
+        const hpEl = document.getElementById("est-hp-gain");
+        const tqEl = document.getElementById("est-tq-gain");
+        const boostEl = document.getElementById("est-boost");
+        
+        if (hpEl) hpEl.textContent = "+" + hpGain;
+        if (tqEl) tqEl.textContent = "+" + tqGain;
+        if (boostEl) boostEl.textContent = "+" + Math.round(boost - 10);
+    }
+
+    function switchTab(tab) {
+        document.querySelectorAll('[data-tab]').forEach(t => {
+            t.classList.remove('active');
+            t.style.background = 'rgba(24, 103, 132, 0.2)';
+            t.style.color = 'var(--sand-beige)';
+        });
+        const activeTab = document.querySelector(`[data-tab="${tab}"]`);
+        if (activeTab) {
+            activeTab.classList.add('active');
+            activeTab.style.background = 'linear-gradient(135deg, var(--performance-blue), var(--metallic-bronze))';
+            activeTab.style.color = 'var(--light-cream)';
+        }
+        
+        document.getElementById('manual-tune-content').classList.toggle('d-none', tab !== 'manual');
+document.getElementById('ai-tune-content').classList.toggle('d-none', tab !== 'ai');
+        document.getElementById('live-tune-content').classList.toggle('d-none', tab !== 'live');
+    }
+
+    // OBDII Simulator Class
+    class OBDIISimulator {
+        constructor() {
+            this.data = {
+                rpm: 0,
+                speed: 0,
+                coolantTemp: 90,
+                intakeAirTemp: 35,
+                throttlePosition: 0,
+                fuelPressure: 300,
+                engineLoad: 0,
+                fuelLevel: 85,
+                voltage: 12.6,
+                massAirFlow: 2.5,
+                timingAdvance: 10,
+                oxygenVoltage: 0.45
+            };
+            
+            this.isRunning = false;
+            this.startTime = 0;
+            this.maxRPM = 8000;
+            this.horsepower = 0;
+            this.torque = 0;
+            this.basePower = 503;
+            this.baseTorque = 550;
+            this.partPowerGain = 0;
+            this.partTorqueGain = 0;
+            
+            this.callbacks = [];
+            this.sweepInterval = null;
+        }
+
+        setVehicleStats(basePower, baseTorque, redline) {
+            this.basePower = basePower || 503;
+            this.baseTorque = baseTorque || 550;
+            this.maxRPM = redline || 7200;
+        }
+
+        applyPartGains(powerGain, torqueGain) {
+            this.partPowerGain = powerGain || 0;
+            this.partTorqueGain = torqueGain || 0;
+        }
+        
+        startEngine() {
+            this.isRunning = true;
+            this.startTime = Date.now();
+            this.simulateIdle();
+        }
+
+        simulateIdle() {
+            this.data.rpm = 800 + Math.random() * 100;
+            this.data.speed = 0;
+            this.data.coolantTemp = 85 + Math.random() * 5;
+            this.data.throttlePosition = 5 + Math.random() * 2;
+            this.data.engineLoad = 15 + Math.random() * 5;
+            this.calculatePerformance();
+            this.notifyCallbacks();
+        }
+
+        sweepRPM() {
+            if (!this.sweepInterval) {
+                let simRpm = 1000;
+                this.sweepInterval = setInterval(() => {
+                    if (simRpm > this.maxRPM) {
+                        simRpm = 1000;
+                    }
+                    
+                    const rpmRatio = simRpm / this.maxRPM;
+                    
+                    this.data.rpm = simRpm;
+                    this.data.speed = Math.round(rpmRatio * 200);
+                    this.data.throttlePosition = 15 + rpmRatio * 60;
+                    this.data.engineLoad = 20 + rpmRatio * 50;
+                    this.data.coolantTemp = 85 + Math.min(15, rpmRatio * 20);
+                    this.data.intakeAirTemp = 25 + rpmRatio * 10;
+                    this.data.massAirFlow = 2.0 + rpmRatio * 3.0;
+                    this.data.fuelPressure = 300 + rpmRatio * 20;
+                    this.data.voltage = 12.6 - rpmRatio * 0.1;
+                    this.data.fuelLevel = 85 - (simRpm > this.maxRPM * 0.7 ? 0.1 : 0);
+                    
+                    this.calculatePerformance();
+                    this.notifyCallbacks();
+                    
+                    simRpm += 150;
+                }, 400);
+            }
+        }
+
+        stopSweep() {
+            if (this.sweepInterval) {
+                clearInterval(this.sweepInterval);
+                this.sweepInterval = null;
+            }
+        }
+
+        calculatePerformance() {
+            const rpmFactor = this.data.rpm / this.maxRPM;
+            const loadFactor = Math.max(0.2, this.data.engineLoad / 100);
+            
+            // Peak power and torque RPM based on engine type
+            const peakPowerRPM = this.maxRPM * 0.75;
+            const peakTorqueRPM = this.maxRPM * 0.45;
+            
+            // Torque curve - bell shaped
+            const torqueMultiplier = Math.exp(-Math.pow((this.data.rpm - peakTorqueRPM) / (this.maxRPM * 0.25), 2));
+            this.torque = (this.baseTorque * 0.6) * torqueMultiplier * loadFactor + this.partTorqueGain;
+            
+            // Power curve - shifted
+            const powerMultiplier = Math.exp(-Math.pow((this.data.rpm - peakPowerRPM) / (this.maxRPM * 0.35), 2));
+            this.horsepower = (this.basePower * 0.8) * powerMultiplier * loadFactor + this.partPowerGain;
+            
+            // Ensure non-negative
+            this.torque = Math.max(0, this.torque);
+            this.horsepower = Math.max(0, this.horsepower);
+        }
+
+        getData() {
+            return { ...this.data, horsepower: this.horsepower, torque: this.torque };
+        }
+
+        subscribe(callback) {
+            this.callbacks.push(callback);
+            return () => {
+                this.callbacks = this.callbacks.filter(cb => cb !== callback);
+            };
+        }
+
+        notifyCallbacks() {
+            this.callbacks.forEach(cb => cb(this.getData()));
+        }
+
+        generateDynoCurve() {
+            const points = 50;
+            const step = this.maxRPM / points;
+            const curve = [];
+            
+            for (let rpm = 1000; rpm <= this.maxRPM; rpm += step) {
+                const torqueMultiplier = Math.exp(-Math.pow((rpm - this.maxRPM * 0.45) / (this.maxRPM * 0.25), 2));
+                const powerMultiplier = Math.exp(-Math.pow((rpm - this.maxRPM * 0.75) / (this.maxRPM * 0.35), 2));
+                
+                const torque = (this.baseTorque * 0.6) * torqueMultiplier + this.partTorqueGain;
+                const horsepower = (this.basePower * 0.8) * powerMultiplier + this.partPowerGain;
+                
+                curve.push({
+                    rpm: Math.round(rpm),
+                    torque: Math.max(0, torque),
+                    horsepower: Math.max(0, horsepower)
+                });
+            }
+            
+            return curve;
+        }
+    }
+
+// Global simulator instance
+    window.obdSimulator = new OBDIISimulator();
+
+    let currentDataSource = 'simulation';
+    let simulationInterval = null;
+    let obdSimulationMode = false;
+
+    async function fetchSavedBuild() {
+        const currentVehicle = window.currentVehicle || localStorage.getItem('selectedVehicle') || 'bmw-m3';
+        
+        if (window.apiClient && currentVehicle) {
+            try {
+                const result = await window.apiClient.getVehicleBuild(currentVehicle);
+                if (result.installedParts && result.installedParts.length > 0) {
+                    return {
+                        totalPowerGain: result.installedParts.reduce((sum, p) => sum + (p.powerGain || 0), 0),
+                        totalTorqueGain: result.installedParts.reduce((sum, p) => sum + (p.torqueGain || 0), 0),
+                        totalBoostGain: result.installedParts.reduce((sum, p) => sum + (p.boostGain || 0), 0)
+                    };
+                }
+            } catch (e) {}
+        }
+        
+        // Also check localStorage for installedPartsData
+        const savedParts = localStorage.getItem('installedPartsData');
+        if (savedParts) {
+            try {
+                const parts = JSON.parse(savedParts);
+                return {
+                    totalPowerGain: parts.reduce((sum, p) => sum + (p.powerGain || 0), 0),
+                    totalTorqueGain: parts.reduce((sum, p) => sum + (p.torqueGain || 0), 0),
+                    totalBoostGain: parts.reduce((sum, p) => sum + (p.boostGain || 0), 0)
+                };
+            } catch (e) {}
+        }
+        return { totalPowerGain: 0, totalTorqueGain: 0, totalBoostGain: 0 };
+    }
+
+async function startSimulation() {
+        currentDataSource = 'simulation';
+        obdSimulationMode = true;
+
+        // Ensure vehicle is loaded before starting simulation
+        const savedVehicle = localStorage.getItem('selectedVehicle') || window.currentVehicle || 'bmw-m3';
+        if (window.vehicleManager && !window.vehicleManager.vehicleData) {
+            await window.vehicleManager.loadVehicleData(savedVehicle);
+        }
+        
+        const buildData = await fetchSavedBuild();
+        const vehicle = window.vehicleManager?.getVehicle() || { basePower: 503, torque: 550, redline: 7200 };
+        
+        window.obdSimulator.setVehicleStats(vehicle.basePower, vehicle.torque, vehicle.redline);
+        window.obdSimulator.applyPartGains(buildData.totalPowerGain, buildData.totalTorqueGain);
+
+        const simBtn = document.getElementById('start-sim-btn');
+        if (simBtn) {
+            simBtn.disabled = true;
+            simBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Running...';
+        }
+
+        const metricsStatus = document.getElementById('obd-metrics-status');
+        if (metricsStatus) {
+            metricsStatus.textContent = 'Simulating';
+            metricsStatus.style.background = 'linear-gradient(135deg, #F59E0B, #D97706)';
+        }
+
+        // Clear any existing subscription and re-subscribe
+        window.obdSimulator.callbacks = [];
+        
+        // Reset live chart
+        if (window.liveChart) {
+            window.liveChart.data.labels = [];
+            window.liveChart.data.datasets[0].data = [];
+            window.liveChart.data.datasets[1].data = [];
+            window.liveChart.update();
+        }
+
+        // Subscribe to simulator updates for charts
+        window.obdSimulator.subscribe((data) => {
+            document.getElementById('rpm-value').textContent = (data.rpm / 1000).toFixed(1);
+            document.getElementById('speed-value').textContent = data.speed;
+            document.getElementById('power-value').textContent = Math.round(data.horsepower);
+            document.getElementById('torque-value').textContent = Math.round(data.torque);
+            document.getElementById('temp-value').textContent = Math.round(data.coolantTemp);
+
+            // Update live chart with time labels
+            if (window.liveChart) {
+                const now = new Date().toLocaleTimeString();
+                window.liveChart.data.labels.push(now);
+                window.liveChart.data.datasets[0].data.push((data.rpm / 1000).toFixed(1));
+                window.liveChart.data.datasets[1].data.push(Math.round(data.horsepower));
+                if (window.liveChart.data.labels.length > 20) {
+                    window.liveChart.data.labels.shift();
+                    window.liveChart.data.datasets[0].data.shift();
+                    window.liveChart.data.datasets[1].data.shift();
+                }
+                window.liveChart.update();
+            }
+        });
+        
+        // Also update dyno curve chart based on vehicle
+        const curve = window.obdSimulator.generateDynoCurve();
+        if (window.dynoCurveChart) {
+            window.dynoCurveChart.data.labels = curve.map(c => c.rpm);
+            window.dynoCurveChart.data.datasets[0].data = curve.map(c => c.torque);
+            window.dynoCurveChart.data.datasets[1].data = curve.map(c => c.horsepower);
+            window.dynoCurveChart.update();
+        }
+        
+        window.obdSimulator.sweepRPM();
+        showToast('Simulation started', 'success');
+    }
+
+    function stopSimulation() {
+        if (simulationInterval) {
+            clearInterval(simulationInterval);
+            simulationInterval = null;
+            obdSimulationMode = false;
+        }
+        window.obdSimulator.stopSweep();
+        const simBtn = document.getElementById('start-sim-btn');
+        if (simBtn) {
+            simBtn.disabled = false;
+            simBtn.innerHTML = '<i class="fas fa-play me-1"></i>Start Simulation';
+        }
+        const metricsStatus = document.getElementById('obd-metrics-status');
+        if (metricsStatus) {
+            metricsStatus.textContent = 'Ready';
+            metricsStatus.style.background = 'linear-gradient(135deg, var(--metallic-bronze), var(--performance-blue))';
+        }
+    }
+
+function startObdReading() {
+         if (simulationInterval) {
+             clearInterval(simulationInterval);
+             simulationInterval = null;
+             obdSimulationMode = false;
+         }
+         
+         const simBtn = document.getElementById('start-sim-btn');
+         if (simBtn) {
+             simBtn.disabled = false;
+             simBtn.innerHTML = '<i class="fas fa-play me-1"></i>Start Simulation';
+         }
+         
+         // First connect OBD if not already connected
+         if (!obdConnected) {
+             const modalEl = document.getElementById('obdConnectModal');
+             if (modalEl) {
+                 const modal = new bootstrap.Modal(modalEl);
+                 modal.show();
+             }
+             return;
+         }
+         
+         // If connected, start OBD polling
+         const metricsStatus = document.getElementById('obd-metrics-status');
+         if (metricsStatus) {
+             metricsStatus.textContent = 'Live';
+             metricsStatus.style.background = 'linear-gradient(135deg, #22C55E, #16A34A)';
+         }
+         startObdPolling();
+         showToast('OBD2 live data started', 'success');
+     }
+    
+    function setDataSource(source) {
+        currentDataSource = source;
+        
+        if (source === 'obd2') {
+            if (simulationInterval) {
+                clearInterval(simulationInterval);
+                simulationInterval = null;
+                obdSimulationMode = false;
+            }
+            const simBtn = document.getElementById('start-sim-btn');
+            if (simBtn) {
+                simBtn.disabled = false;
+                simBtn.innerHTML = '<i class="fas fa-play me-1"></i>Start Simulation';
+            }
+            if (!obdConnected) {
+                const modalEl = document.getElementById('obdConnectModal');
+                if (modalEl) {
+                    const modal = new bootstrap.Modal(modalEl);
+                    modal.show();
+                }
+            }
+            showToast('Using real OBD2 data for graphs', 'info');
+        } else {
+            showToast('Using simulated data for graphs', 'info');
+        }
+    }
+</script>
+
+</body>
+</html>

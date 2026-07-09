@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RevDynamics - Select Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #000101, #0C2E3D);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .login-container {
+            position: relative;
+            width: 500px;
+            margin: 100px auto 40px;
+        }
+
+        .login-box {
+            position: relative;
+            width: 100%;
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            padding: 40px;
+            overflow: hidden;
+        }
+
+        .login-box::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 15px 50px #000);
+            border-radius: 24px;
+            animation: rotating 4s linear infinite;
+            animation-delay: -1s;
+            z-index: 0;
+            background: linear-gradient(45deg, var(--performance-blue), var(--metallic-bronze), var(--sand-beige));
+        }
+
+        .login-box::after {
+            content: '';
+            position: absolute;
+            inset: 4px;
+            background: rgba(12, 46, 61, 0.95);
+            border-radius: 20px;
+            z-index: 0;
+        }
+
+        @keyframes rotating {
+            0% {
+                transform: rotate(0deg) scale(1.1);
+                filter: hue-rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg) scale(1.1);
+                filter: hue-rotate(360deg);
+            }
+        }
+
+        .login-content {
+            position: relative;
+            z-index: 1;
+            color: var(--light-cream);
+            width: 100%;
+        }
+
+        .login-content .text-muted {
+            color: rgba(196, 166, 182, 0.6) !important;
+        }
+
+        .card-choice {
+            background: rgba(255,255,255,0.05) !important;
+            border: 1px solid rgba(154, 124, 101, 0.2) !important;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            color: var(--light-cream) !important;
+        }
+
+        .card-choice:hover {
+            transform: translateY(-5px);
+            border-color: var(--performance-blue) !important;
+        }
+
+        .card-choice .text-dark {
+            color: var(--light-cream) !important;
+        }
+
+        .card-choice .text-muted {
+            color: rgba(196, 166, 182, 0.6) !important;
+        }
+
+        .icon-box {
+            width: 80px;
+            height: 80px;
+            background: rgba(24, 103, 132, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(154, 124, 101, 0.3);
+        }
+
+        .icon-box i {
+            color: var(--performance-blue);
+            font-size: 32px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <div class="login-content">
+                <div class="container text-center">
+                    <div class="mb-5">
+                        <img src="IMG/Gemini_Generated_Image_29cg2x29cg2x29cg.png" style="width: 60px; height: 60px; margin-bottom: 15px;">
+                        <h2 class="fw-bold">Select Login Type</h2>
+                        <p class="text-muted">Choose your access level for RevDynamics</p>
+                    </div>
+                    
+                    <div class="row justify-content-center g-4">
+                        <div class="col-md-6">
+                            <a href="tuner-login.html" class="text-decoration-none">
+                                <div class="card card-choice shadow-sm p-4 rounded-4 h-100">
+                                    <div class="icon-box mb-4 mx-auto">
+                                        <i class="fas fa-wrench"></i>
+                                    </div>
+                                    <h4 class="mb-2">Professional Tuner</h4>
+                                    <p class="small">Mechanics & Performance Shops</p>
+                                    <ul class="list-unstyled small mt-3">
+                                        <li><i class="fas fa-check me-2" style="color: var(--metallic-bronze);"></i>Dyno Tuning Software</li>
+                                        <li><i class="fas fa-check me-2" style="color: var(--metallic-bronze);"></i>Vehicle Diagnostics</li>
+                                        <li><i class="fas fa-check me-2" style="color: var(--metallic-bronze);"></i>Parts Database Access</li>
+                                    </ul>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="owner-login.html" class="text-decoration-none">
+                                <div class="card card-choice shadow-sm p-4 rounded-4 h-100">
+                                    <div class="icon-box mb-4 mx-auto">
+                                        <i class="fas fa-car"></i>
+                                    </div>
+                                    <h4 class="mb-2">Vehicle Owner</h4>
+                                    <p class="small">Car Enthusiasts & Drivers</p>
+                                    <ul class="list-unstyled small mt-3">
+                                        <li><i class="fas fa-check me-2" style="color: var(--metallic-bronze);"></i>Live OBD-II Data</li>
+                                        <li><i class="fas fa-check me-2" style="color: var(--metallic-bronze);"></i>Performance Tracking</li>
+                                        <li><i class="fas fa-check me-2" style="color: var(--metallic-bronze);"></i>Tuning Recommendations</li>
+                                    </ul>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-5">
+                        <a href="index.html" class="text-muted text-decoration-none">
+                            <i class="fas fa-arrow-left me-2" style="color: var(--sand-beige);"></i>Back to Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

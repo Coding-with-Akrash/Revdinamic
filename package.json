@@ -1,0 +1,10 @@
+{
+  "name": "autodyno-ai",
+  "version": "1.0.0",
+  "description": "Real-time OBD-II vehicle diagnostics and AI-powered tuning",
+  "main": "index.html",
+  "scripts": {
+    "dev": "cd backend && python run.py",
+    "start": "cd backend && python -m flask run --host=0.0.0.0 --port=5000"
+  }
+}
